@@ -1,0 +1,41 @@
+import Elysia from 'elysia'
+import { jwt } from '@elysiajs/jwt'
+import { cookie } from '@elysiajs/cookie'
+
+export const authMiddleware = new Elysia({ name: 'auth-middleware' })
+  .use(
+    jwt({
+      name: 'jwt',
+      secret: process.env.JWT_SECRET!,
+    })
+  )
+  .use(cookie())
+  .derive({ as: 'scoped' }, async ({ jwt, cookie, set, request }) => {
+    const authHeader = request.headers.get('Authorization')
+    const token = authHeader?.startsWith('Bearer ') 
+      ? authHeader.slice(7) 
+      : cookie.accessToken.value
+
+    // Debugging: Log token source (Jangan gunakan di production!)
+    if (!token) {
+      console.log('❌ No token found in Header or Cookie')
+    } else {
+      console.log('✅ Token found, verifying...')
+    }
+
+    if (!token || typeof token !== 'string') {
+      set.status = 401
+      throw new Error('Unauthorized: No token provided')
+    }
+
+
+    const payload = await jwt.verify(token)
+    if (!payload) {
+      set.status = 401
+      throw new Error('Unauthorized: Invalid or expired token')
+    }
+
+    return { userId: Number(payload.sub) }
+  })
+
+
