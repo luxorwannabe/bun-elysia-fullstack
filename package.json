@@ -1,16 +1,29 @@
 {
   "name": "bun-elysia-fullstack",
   "version": "0.1.0",
-  "description": "Modern Fullstack Monorepo with Bun & ElysiaJS API, paired with a React + Vite frontend. Built with Drizzle ORM, MySQL, and TailwindCSS 4.",
-  "type": "module",
   "author": "Luxor <luxorwannabe@gmail.com>",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.5.2",
+    "eslint": "^10.2.0",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.0"
+  },
+  "description": "Modern Fullstack Monorepo with Bun & ElysiaJS API, paired with a React + Vite frontend. Built with Drizzle ORM, MySQL, and TailwindCSS 4.",
   "license": "MIT",
-  "workspaces": [
-    "apps/*"
-  ],
+  "dependencies": {
+    "elysia": "latest"
+  },
   "scripts": {
     "dev:api": "bun --filter api dev",
     "dev:web": "bun --filter web dev",
-    "dev": "bun --filter \"*\" dev"
-  }
+    "dev": "bun --filter \"*\" dev",
+    "build": "bun --filter \"*\" build",
+    "lint": "bun --filter \"*\" lint",
+    "typecheck": "bun --filter \"*\" typecheck"
+  },
+  "type": "module",
+  "workspaces": [
+    "apps/*"
+  ]
 }

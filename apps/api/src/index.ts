@@ -66,7 +66,7 @@ const app = new Elysia()
   })
   .use(authRoutes)
   .use(userRoutes)
-  .get('/', ({ set }) => {
+  .get('/', () => {
     return {
       status: 'success',
       message: 'Bun Elysia Fullstack API is running',
