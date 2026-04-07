@@ -12,6 +12,21 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Name Edit State
+  const [isEditingName, setIsEditingName] = useState(false)
+  const [editNameValue, setEditNameValue] = useState('')
+  const [savingName, setSavingName] = useState(false)
+
+  // Password Change State
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordSuccess, setPasswordSuccess] = useState('')
+  const [savingPassword, setSavingPassword] = useState(false)
+
   const fetchProfile = async () => {
     setLoading(true)
     const { data, error: apiError } = await (api.user.profile.get() as any)
@@ -24,15 +39,10 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
       }
     }
 
-    // Handle Error (including 401)
     if (apiError?.status === 401) {
-      console.log('🔄 Access Token expired, attempting silent refresh...')
       const { error: refreshError } = await (api.auth.refresh.post() as any)
-      
       if (!refreshError) {
-        console.log('✅ Refresh successful, retrying profile fetch...')
         const { data: retryData, error: retryError } = await (api.user.profile.get() as any)
-        
         if (!retryError && retryData && typeof retryData !== 'string') {
           setUser(retryData as UserProfile)
           setLoading(false)
@@ -41,12 +51,9 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
       }
     }
     
-    // If we reach here, it's a real error or refresh failed
-    console.log('❌ Auth failure, logging out')
     onLogout()
     setLoading(false)
   }
-
 
   useEffect(() => {
     fetchProfile()
@@ -56,6 +63,75 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     await (api.auth.logout.post() as any)
     onLogout()
   }
+
+  const handleUpdateName = async () => {
+    if (!editNameValue.trim() || editNameValue === user?.name) {
+      setIsEditingName(false)
+      return
+    }
+    setSavingName(true)
+    const { data, error } = await api.user.profile.put({ name: editNameValue })
+    setSavingName(false)
+    if (!error && data) {
+      setUser((prev) => prev ? { ...prev, name: data.name } : null)
+      setIsEditingName(false)
+    }
+  }
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setPasswordError('')
+    setPasswordSuccess('')
+    setSavingPassword(true)
+
+    const { error } = await (api.user.password.put({ currentPassword, newPassword }) as any)
+    
+    setSavingPassword(false)
+    if (error) {
+      const errVal = error.value as any
+      setPasswordError(errVal?.error || 'Failed to change password')
+    } else {
+      setPasswordSuccess('Password successfully updated!')
+      setCurrentPassword('')
+      setNewPassword('')
+      setIsChangingPassword(false)
+      setTimeout(() => setPasswordSuccess(''), 5000)
+    }
+  }
+
+  // Password Strength Logic
+  const getPasswordStrength = () => {
+    let score = 0
+    if (newPassword.length > 5) score += 1
+    if (newPassword.length > 8) score += 1
+    if (/\d/.test(newPassword)) score += 1
+    if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(newPassword)) score += 1
+    return score
+  }
+
+  const strengthScore = getPasswordStrength()
+  const getStrengthColor = () => {
+    switch (strengthScore) {
+      case 0: return 'bg-slate-700'
+      case 1: return 'bg-red-500'
+      case 2: return 'bg-orange-500'
+      case 3: return 'bg-yellow-400'
+      case 4: return 'bg-emerald-500'
+      default: return 'bg-slate-700'
+    }
+  }
+
+  const getStrengthLabel = () => {
+    if (newPassword.length === 0) return ''
+    switch (strengthScore) {
+      case 1: return 'Weak'
+      case 2: return 'Fair'
+      case 3: return 'Good'
+      case 4: return 'Strong'
+      default: return ''
+    }
+  }
+
 
   if (loading) {
     return (
@@ -70,14 +146,62 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
 
   return (
     <div className="max-w-2xl w-full p-8 bg-slate-800 rounded-3xl shadow-2xl border border-slate-700 animate-in fade-in zoom-in duration-500">
-      <div className="flex flex-col md:flex-row items-center gap-8">
-        <div className="w-32 h-32 bg-linear-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-5xl font-bold text-white shadow-lg shadow-indigo-500/20">
-          {user.name.charAt(0)}
+      
+      {passwordSuccess && (
+        <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-sm font-bold flex items-center gap-2 animate-in slide-in-from-top-4">
+          <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
+          {passwordSuccess}
         </div>
+      )}
 
+      <div className="flex flex-col md:flex-row items-start gap-8">
+        <div className="w-32 h-32 bg-linear-to-br from-indigo-500 to-purple-600 rounded-2xl flex shrink-0 items-center justify-center text-5xl font-bold text-white shadow-lg shadow-indigo-500/20">
+          {user.name.charAt(0).toUpperCase()}
+        </div>
         
-        <div className="flex-1 text-center md:text-left">
-          <h1 className="text-4xl font-extrabold text-white mb-2">{user.name}</h1>
+        <div className="flex-1 w-full">
+          <div className="mb-2 flex items-center gap-3 h-12">
+            {isEditingName ? (
+              <div className="flex items-center gap-2 w-full animate-in fade-in">
+                <input 
+                  type="text" 
+                  value={editNameValue}
+                  onChange={(e) => setEditNameValue(e.target.value)}
+                  disabled={savingName}
+                  className="flex-1 px-3 py-2 bg-slate-900 border border-indigo-500 rounded-lg text-white font-bold text-2xl focus:outline-none"
+                  autoFocus
+                />
+                <button 
+                  onClick={handleUpdateName}
+                  disabled={savingName}
+                  className="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold rounded-lg text-sm transition-colors"
+                >
+                  {savingName ? '...' : 'Save'}
+                </button>
+                <button 
+                  onClick={() => setIsEditingName(false)}
+                  disabled={savingName}
+                  className="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-lg text-sm transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-4 group">
+                <h1 className="text-4xl font-extrabold text-white truncate leading-none pb-1">{user.name}</h1>
+                <button 
+                  onClick={() => {
+                    setEditNameValue(user.name)
+                    setIsEditingName(true)
+                  }}
+                  className="px-3 py-1 bg-slate-700/50 hover:bg-indigo-500/20 text-slate-400 hover:text-indigo-400 rounded-full text-xs font-bold transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 uppercase tracking-wider"
+                >
+                  Edit
+                </button>
+              </div>
+            )}
+          </div>
+
           <p className="text-indigo-400 font-medium mb-4">{user.email}</p>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
@@ -94,6 +218,114 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Change Password Section */}
+      <div className="mt-8 pt-8 border-t border-slate-700/50">
+        {!isChangingPassword ? (
+          <button
+            onClick={() => setIsChangingPassword(true)}
+            className="w-full sm:w-auto px-6 py-3 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-700 transition-all flex items-center justify-center gap-2"
+          >
+            Update Security Settings
+          </button>
+        ) : (
+          <form onSubmit={handleChangePassword} className="bg-slate-900/50 p-6 rounded-2xl border border-slate-700 animate-in slide-in-from-top-4 fade-in duration-300">
+            <h3 className="text-lg font-bold text-white mb-4">Change Password</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-400 mb-1.5 ml-1">Current Password</label>
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? 'text' : 'password'}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all pr-12"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-indigo-400 transition-colors focus:outline-none"
+                  >
+                    {showCurrentPassword ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-400 mb-1.5 ml-1">New Password</label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? 'text' : 'password'}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all pr-12"
+                    required
+                    minLength={6}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-indigo-400 transition-colors focus:outline-none"
+                  >
+                    {showNewPassword ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    )}
+                  </button>
+                </div>
+                {/* Password Strength Indicator */}
+                {newPassword.length > 0 && (
+                  <div className="mt-2 text-right">
+                    <div className="flex gap-1 h-1 w-full rounded-full overflow-hidden mb-1">
+                      <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 1 ? getStrengthColor() : 'bg-slate-700'}`}></div>
+                      <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 2 ? getStrengthColor() : 'bg-slate-700'}`}></div>
+                      <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 3 ? getStrengthColor() : 'bg-slate-700'}`}></div>
+                      <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 4 ? getStrengthColor() : 'bg-slate-700'}`}></div>
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase">{getStrengthLabel()}</span>
+                  </div>
+                )}
+              </div>
+
+              {passwordError && (
+                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm font-medium animate-pulse">
+                  {passwordError}
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={savingPassword || newPassword.length < 6}
+                  className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-800 disabled:opacity-50 text-white font-bold rounded-xl transition-all"
+                >
+                  {savingPassword ? 'Saving...' : 'Save New Password'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsChangingPassword(false)
+                    setPasswordError('')
+                    setCurrentPassword('')
+                    setNewPassword('')
+                  }}
+                  disabled={savingPassword}
+                  className="px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl transition-all"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
       </div>
 
       <div className="mt-10 pt-8 border-t border-slate-700/50 flex justify-between items-center">

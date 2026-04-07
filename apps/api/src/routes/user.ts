@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm'
 import { db } from '../db'
 import { users } from '../db/schema'
 import { authMiddleware } from '../middleware/auth'
+import { hashPassword, verifyPassword } from '../utils/password'
 
 export const userRoutes = new Elysia({ prefix: '/user' })
   .use(authMiddleware)
@@ -108,6 +109,56 @@ export const userRoutes = new Elysia({ prefix: '/user' })
         tags: ['User'],
         summary: 'Update user profile',
         description: "Update the authenticated user's name and/or email. Requires a Bearer token.",
+        security: [{ bearerAuth: [] }],
+      },
+    }
+  )
+  .put(
+    '/password',
+    async ({ userId, body, set }) => {
+      const { currentPassword, newPassword } = body
+
+      const [user] = await db
+        .select({ id: users.id, password: users.password })
+        .from(users)
+        .where(eq(users.id, userId))
+
+      if (!user) {
+        set.status = 404
+        return { error: 'User not found' }
+      }
+
+      const valid = await verifyPassword(currentPassword, user.password)
+      if (!valid) {
+        set.status = 401
+        return { error: 'Incorrect current password' }
+      }
+
+      const hashed = await hashPassword(newPassword)
+      await db.update(users).set({ password: hashed }).where(eq(users.id, userId))
+
+      return { message: 'Password updated successfully' }
+    },
+    {
+      body: t.Object({
+        currentPassword: t.String({ minLength: 1 }),
+        newPassword: t.String({ minLength: 6, maxLength: 72 }),
+      }),
+      response: {
+        200: t.Object({
+          message: t.String(),
+        }),
+        401: t.Object({
+          error: t.String(),
+        }),
+        404: t.Object({
+          error: t.String(),
+        }),
+      },
+      detail: {
+        tags: ['User'],
+        summary: 'Change user password',
+        description: "Change the authenticated user's password. Requires current password.",
         security: [{ bearerAuth: [] }],
       },
     }

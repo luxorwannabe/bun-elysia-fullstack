@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { api } from './lib/api'
 import { Login } from './components/Login'
 import { Profile } from './components/Profile'
+import { Register } from './components/Register'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
@@ -57,11 +59,24 @@ function App() {
       </div>
       
       <main className="relative z-10 w-full flex justify-center p-4 max-w-4xl">
-        {isAuthenticated ? (
-          <Profile onLogout={() => setIsAuthenticated(false)} />
-        ) : (
-          <Login onLogin={() => setIsAuthenticated(true)} />
-        )}
+        <Routes>
+          <Route 
+            path="/login" 
+            element={isAuthenticated ? <Navigate to="/" replace /> : <Login onLogin={() => setIsAuthenticated(true)} />} 
+          />
+          <Route 
+            path="/register" 
+            element={isAuthenticated ? <Navigate to="/" replace /> : <Register onRegister={() => setIsAuthenticated(true)} />} 
+          />
+          <Route 
+            path="/profile" 
+            element={isAuthenticated ? <Profile onLogout={() => setIsAuthenticated(false)} /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="*" 
+            element={<Navigate to={isAuthenticated ? "/profile" : "/login"} replace />} 
+          />
+        </Routes>
       </main>
       
       <footer className="fixed bottom-8 left-0 right-0 text-center opacity-30 text-xs font-mono tracking-widest pointer-events-none uppercase">
