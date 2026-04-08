@@ -27,6 +27,9 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
     rateLimit({
       duration: 60000, // 1 minute
       max: process.env.NODE_ENV === 'production' ? 15 : 100, // higher limit in dev due to React strict mode
+      generator: (request, server) => {
+        return server?.requestIP(request)?.address || request.headers.get('x-forwarded-for') || '127.0.0.1'
+      },
       errorResponse: new Response(
         JSON.stringify({ error: 'Too many requests, please try again later' }),
         {
