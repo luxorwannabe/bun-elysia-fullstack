@@ -55,9 +55,17 @@ cp apps/api/.env.example apps/api/.env
 | Variable | Description | Default |
 | :--- | :--- | :--- |
 | `DB_HOST` | MySQL Server Host | `localhost` |
+| `DB_PORT` | MySQL Server Port | `3306` |
+| `DB_USER` | MySQL Username | `root` |
+| `DB_PASSWORD` | MySQL Password | *empty* |
 | `DB_NAME` | Database Name | `bun_auth_api` |
 | `JWT_SECRET` | Secret for Access Token | *required* |
-| `PORT` | API Port | `3000` |
+| `REFRESH_SECRET` | Secret for Refresh Token | *required* |
+| `CORS_ORIGIN` | Allowed Frontend Origin | `http://localhost:5173` |
+| `PORT` | API Server Port | `3000` |
+
+> [!TIP]
+> Make sure to manually create your database in MySQL (e.g., `CREATE DATABASE bun_auth_api;`) before running the migration commands in the next step.
 
 ### 4. Database Migrations
 Run these commands to sync your database schema:
