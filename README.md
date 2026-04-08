@@ -110,6 +110,44 @@ Once running, you can access the project components at these locations:
 
 ---
 
+## 🌐 Deployment
+
+This project is configured to be flexible for various deployment methods:
+
+### 1. Vercel (Recommended for Frontend & API)
+This project uses a bundling strategy to ensure full compatibility with **Vercel Serverless Functions**.
+- **API**: Bundled into a single `dist/index.js` file with Node.js target (for maximum compatibility) and minified (only ~1.9MB).
+- **Configuration**: See [vercel.json](./vercel.json) in the root directory for monorepo routing settings.
+
+### 2. Self-Hosting (VPS / Docker)
+If you want to run the application on your own server using **Bun** natively:
+
+#### Build API:
+```bash
+cd apps/api
+bun run build
+```
+
+#### Run Production:
+You can run the bundled output or run the source directly with Bun for maximum performance:
+```bash
+# Run the bundled output
+bun apps/api/dist/index.js
+
+# OR run the source natively (recommended for pure Bun performance)
+bun run apps/api/src/index.ts
+```
+
+#### Web App:
+The web app is built as a static site:
+```bash
+cd apps/web
+bun run build
+```
+The build output is located in `apps/web/dist` and can be served using Nginx or other static hosting services.
+
+---
+
 ## 👨‍💻 Author
 **Luxor** ([@luxorwannabe](https://github.com/luxorwannabe))
 
