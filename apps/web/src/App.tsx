@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data, error } = await (api.user.profile.get() as any)
+        const { data, error } = await api.user.profile.get()
         
         if (!error && data && typeof data !== 'string') {
           setIsAuthenticated(true)
@@ -20,10 +20,10 @@ function App() {
 
         // If Error, try to refresh
         if (error?.status === 401) {
-          const { error: refreshError } = await (api.auth.refresh.post() as any)
+          const { error: refreshError } = await api.auth.refresh.post()
           
           if (!refreshError) {
-            const { data: retryData, error: retryError } = await (api.user.profile.get() as any)
+            const { data: retryData, error: retryError } = await api.user.profile.get()
             if (!retryError && retryData && typeof retryData !== 'string') {
               setIsAuthenticated(true)
               return
@@ -32,7 +32,7 @@ function App() {
         }
         
         setIsAuthenticated(false)
-      } catch (err) {
+      } catch {
         setIsAuthenticated(false)
       }
     }

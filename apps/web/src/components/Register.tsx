@@ -58,7 +58,7 @@ export const Register: React.FC<{ onRegister: () => void }> = ({ onRegister }) =
     setLoading(false)
 
     if (apiError) {
-      const errVal = apiError.value as any
+      const errVal = apiError.value as { error?: string; message?: string }
       setError(errVal?.error || errVal?.message || 'Registration failed')
       return
     }

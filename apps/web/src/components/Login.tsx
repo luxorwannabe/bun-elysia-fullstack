@@ -22,8 +22,11 @@ export const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
     setLoading(false)
 
     if (apiError) {
-      const errVal = apiError.value as any
-      setError(errVal?.error || errVal?.message || 'Login failed')
+      const errVal = apiError.value
+      const errorMessage = (typeof errVal === 'object' && errVal !== null && ('error' in errVal || 'message' in errVal))
+        ? (errVal as { error?: string; message?: string }).error || (errVal as { message?: string }).message
+        : 'Login failed'
+      setError(errorMessage || 'Login failed')
       return
     }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { api } from '../lib/api'
 
 interface UserProfile {
@@ -27,9 +27,9 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const [passwordSuccess, setPasswordSuccess] = useState('')
   const [savingPassword, setSavingPassword] = useState(false)
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     setLoading(true)
-    const { data, error: apiError } = await (api.user.profile.get() as any)
+    const { data, error: apiError } = await api.user.profile.get()
     
     if (!apiError) {
       if (data && typeof data !== 'string') {
@@ -40,9 +40,9 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     }
 
     if (apiError?.status === 401) {
-      const { error: refreshError } = await (api.auth.refresh.post() as any)
+      const { error: refreshError } = await api.auth.refresh.post()
       if (!refreshError) {
-        const { data: retryData, error: retryError } = await (api.user.profile.get() as any)
+        const { data: retryData, error: retryError } = await api.user.profile.get()
         if (!retryError && retryData && typeof retryData !== 'string') {
           setUser(retryData as UserProfile)
           setLoading(false)
@@ -53,14 +53,14 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     
     onLogout()
     setLoading(false)
-  }
+  }, [onLogout])
 
   useEffect(() => {
     fetchProfile()
-  }, [])
+  }, [fetchProfile])
 
   const handleLogout = async () => {
-    await (api.auth.logout.post() as any)
+    await api.auth.logout.post()
     onLogout()
   }
 
@@ -84,11 +84,11 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     setPasswordSuccess('')
     setSavingPassword(true)
 
-    const { error } = await (api.user.password.put({ currentPassword, newPassword }) as any)
+    const { error } = await api.user.password.put({ currentPassword, newPassword })
     
     setSavingPassword(false)
     if (error) {
-      const errVal = error.value as any
+      const errVal = error.value as { error?: string }
       setPasswordError(errVal?.error || 'Failed to change password')
     } else {
       setPasswordSuccess('Password successfully updated!')
