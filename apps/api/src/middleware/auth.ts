@@ -16,12 +16,7 @@ export const authMiddleware = new Elysia({ name: 'auth-middleware' })
       ? authHeader.slice(7) 
       : cookie.accessToken.value
 
-    // Debugging: Log token source (Jangan gunakan di production!)
-    if (!token) {
-      console.log('❌ No token found in Header or Cookie')
-    } else {
-      console.log('✅ Token found, verifying...')
-    }
+
 
     if (!token || typeof token !== 'string') {
       set.status = 401

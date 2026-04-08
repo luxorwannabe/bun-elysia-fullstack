@@ -63,10 +63,10 @@ cp apps/api/.env.example apps/api/.env
 Run these commands to sync your database schema:
 ```bash
 # Generate migration files
-bun --filter api db:generate
+bun --filter @bun-elysia-fullstack/api db:generate
 
 # Execute migrations to database
-bun --filter api db:migrate
+bun --filter @bun-elysia-fullstack/api db:migrate
 ```
 
 ---
@@ -98,7 +98,7 @@ Once running, you can access the project components at these locations:
 | Run all apps | `bun dev` |
 | Run only API | `bun dev:api` |
 | Run only Web | `bun dev:web` |
-| New dependencies | `bun add <package> --filter <api|web>` |
+| New dependencies | `bun add <package> --filter @bun-elysia-fullstack/api` |
 | Production Build | `bun run build` |
 
 ---

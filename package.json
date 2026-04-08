@@ -5,6 +5,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^25.5.2",
+    "concurrently": "^9.2.1",
     "eslint": "^10.2.0",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.0"
@@ -15,9 +16,9 @@
     "elysia": "latest"
   },
   "scripts": {
-    "dev:api": "bun --filter api dev",
-    "dev:web": "bun --filter web dev",
-    "dev": "bun --filter \"*\" dev",
+    "dev:api": "bun --filter @bun-elysia-fullstack/api dev",
+    "dev:web": "bun --filter @bun-elysia-fullstack/web dev",
+    "dev": "concurrently \"bun dev:api\" \"bun dev:web\"",
     "build": "bun --filter \"*\" build",
     "lint": "bun --filter \"*\" lint",
     "typecheck": "bun --filter \"*\" typecheck"
