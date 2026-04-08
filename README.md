@@ -66,6 +66,7 @@ cp apps/api/.env.example apps/api/.env
 ### 4. Database Migrations
 > [!NOTE]
 > Make sure to manually create your database in MySQL (e.g., `CREATE DATABASE bun_auth_api;`) before running the migration commands in the next step.
+
 Run these commands to sync your database schema:
 ```bash
 # Generate migration files
