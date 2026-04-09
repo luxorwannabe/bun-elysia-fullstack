@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "bun run --watch src/index.ts",
     "start": "bun run src/index.ts",
-    "build": "bun build ./src/index.ts --outfile ./dist/index.js --target node --format esm --minify",
+    "build": "bun build ./src/index.ts --outfile ./dist/index.js --target bun --format esm --minify",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
