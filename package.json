@@ -21,7 +21,8 @@
     "dev": "concurrently \"bun dev:api\" \"bun dev:web\"",
     "build": "bun --filter \"*\" build",
     "lint": "bun --filter \"*\" lint",
-    "typecheck": "bun --filter \"*\" typecheck"
+    "typecheck": "bun --filter \"*\" typecheck",
+    "test": "concurrently \"bun --filter @bun-elysia-fullstack/api test\" \"bun --filter @bun-elysia-fullstack/web test\""
   },
   "type": "module",
   "workspaces": [
