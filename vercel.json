@@ -1,12 +1,12 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/api(.*)", "dest": "/apps/api/vercel-adapter.js" },
+    { "src": "/api(.*)", "dest": "/api/index.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
   "functions": {
-    "apps/api/vercel-adapter.js": {
+    "api/index.js": {
       "maxDuration": 10
     }
   }
