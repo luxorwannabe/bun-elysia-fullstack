@@ -271,6 +271,18 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           {passwordSuccess}
         </div>
       )}
+
+      {profileError && (
+        <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 rounded-lg text-rose-400 text-sm font-bold flex items-center justify-between animate-in slide-in-from-top-4">
+          <div className="flex items-center gap-3">
+            <span className="w-2 h-2 bg-rose-500 rounded-full"></span>
+            {profileError}
+          </div>
+          <button onClick={() => setProfileError('')} className="text-rose-400/50 hover:text-rose-400 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      )}
       
       {/* Rest of Vercel Warning */}
       {showVercelWarning && (
