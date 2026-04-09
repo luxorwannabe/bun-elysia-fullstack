@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { api } from './lib/api'
+import { Home } from './components/Home'
 import { Login } from './components/Login'
 import { Profile } from './components/Profile'
 import { Register } from './components/Register'
@@ -51,36 +52,52 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen w-screen flex items-center justify-center bg-slate-950 text-slate-200 selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen w-full bg-slate-950 text-slate-200 selection:bg-indigo-500/30 selection:text-indigo-200 overflow-x-hidden">
 
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-indigo-500/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-500/10 blur-[120px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-slate-900/50 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-slate-900/50 blur-[120px]" />
       </div>
       
-      <main className="relative z-10 w-full flex justify-center p-4 max-w-4xl">
+      <main className="relative z-10 w-full">
         <Routes>
           <Route 
+            path="/" 
+            element={<Home isAuthenticated={isAuthenticated} />} 
+          />
+          <Route 
             path="/login" 
-            element={isAuthenticated ? <Navigate to="/" replace /> : <Login onLogin={() => setIsAuthenticated(true)} />} 
+            element={
+              <div className="min-h-screen w-full flex items-center justify-center p-4">
+                {isAuthenticated ? <Navigate to="/profile" replace /> : <Login onLogin={() => setIsAuthenticated(true)} />} 
+              </div>
+            } 
           />
           <Route 
             path="/register" 
-            element={isAuthenticated ? <Navigate to="/" replace /> : <Register onRegister={() => setIsAuthenticated(true)} />} 
+            element={
+              <div className="min-h-screen w-full flex items-center justify-center p-4">
+                {isAuthenticated ? <Navigate to="/profile" replace /> : <Register onRegister={() => setIsAuthenticated(true)} />} 
+              </div>
+            } 
           />
           <Route 
             path="/profile" 
-            element={isAuthenticated ? <Profile onLogout={() => setIsAuthenticated(false)} /> : <Navigate to="/login" replace />} 
+            element={
+              <div className="min-h-screen w-full flex items-center justify-center p-4">
+                {isAuthenticated ? <Profile onLogout={() => setIsAuthenticated(false)} /> : <Navigate to="/login" replace />} 
+              </div>
+            } 
           />
           <Route 
             path="*" 
-            element={<Navigate to={isAuthenticated ? "/profile" : "/login"} replace />} 
+            element={<Navigate to="/" replace />} 
           />
         </Routes>
       </main>
       
-      <footer className="fixed bottom-8 left-0 right-0 text-center opacity-30 text-xs font-mono tracking-widest pointer-events-none uppercase">
-        Bun + Elysia + Drizzle + React + Eden
+      <footer className="w-full py-12 text-center opacity-30 text-xs font-mono tracking-widest uppercase mt-auto">
+        &copy; 2026 Luxor &bull; Licensed under MIT
       </footer>
     </div>
   )

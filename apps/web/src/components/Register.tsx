@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 
 export const Register: React.FC<{ onRegister: () => void }> = ({ onRegister }) => {
+  useEffect(() => {
+    document.title = 'Register | Bun Elysia Fullstack'
+  }, [])
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

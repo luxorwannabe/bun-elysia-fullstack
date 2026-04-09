@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 
 export const Login: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
+  useEffect(() => {
+    document.title = 'Login | Bun Elysia Fullstack'
+  }, [])
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)

@@ -23,6 +23,9 @@ interface UserProfile {
 }
 
 export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
+  useEffect(() => {
+    document.title = 'Profile | Bun Elysia Fullstack'
+  }, [])
   const [user, setUser] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
