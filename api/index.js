@@ -1,15 +1,20 @@
-import * as api from "../apps/api/dist/index.js";
+import * as apiModule from "../apps/api/dist/index.js";
 
 export default async function (request) {
-  // Move detection inside the handler to avoid "before initialization" errors
-  const instance = api.default || api;
-  const app = (instance && typeof instance.handle !== 'function' && instance.default) 
-    ? instance.default 
-    : instance;
-    
-  if (!app || typeof app.handle !== 'function') {
-    throw new Error("Elysia instance not found in bundle. Check build exports.");
+  console.log("API Bridge Request to:", request.url);
+
+  // Use a unique variable name to avoid any initialization/TDZ issues
+  let elysiaServer = apiModule.default || apiModule;
+  
+  // Handle tiered wrapping that sometimes occurs in Bun/Node hybrid bundles
+  if (elysiaServer && elysiaServer.default && typeof elysiaServer.handle !== 'function') {
+    elysiaServer = elysiaServer.default;
   }
 
-  return app.handle(request);
+  if (!elysiaServer || typeof elysiaServer.handle !== 'function') {
+    console.error("Failed to find handle on elysiaServer. Module keys:", Object.keys(apiModule));
+    return new Response("API Internal Server Error: Handler not found", { status: 500 });
+  }
+
+  return elysiaServer.handle(request);
 }
