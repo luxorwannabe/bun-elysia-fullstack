@@ -1,24 +1,13 @@
 {
   "version": 2,
-  "bunVersion": "1.x",
+  "rewrites": [
+    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
   "functions": {
     "api/index.js": {
       "maxDuration": 10
     }
-  },
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/api",
-      "destination": "/api/index.js"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index.js"
-    },
-    {
-      "source": "/((?!api).*)",
-      "destination": "/index.html"
-    }
-  ]
+  }
 }
