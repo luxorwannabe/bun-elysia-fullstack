@@ -10,6 +10,7 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME || 'bun_auth_api',
   waitForConnections: true,
   connectionLimit: 10,
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : undefined,
 })
 
 export const db = drizzle(pool, { schema, mode: 'default' })
