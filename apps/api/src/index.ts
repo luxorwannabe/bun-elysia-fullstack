@@ -1,8 +1,8 @@
 import Elysia from 'elysia'
 import { cors } from '@elysiajs/cors'
 import { swagger } from '@elysiajs/swagger'
-import { authRoutes } from './routes/auth.ts'
-import { userRoutes } from './routes/user.ts'
+import { authRoutes } from './routes/auth.js'
+import { userRoutes } from './routes/user.js'
 
 const app = new Elysia()
   .use(
