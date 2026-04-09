@@ -12,8 +12,16 @@
       "destination": "/apps/api/dist/index.js"
     },
     {
+      "source": "/swagger(.*)",
+      "destination": "/apps/api/dist/index.js"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/apps/web/dist/assets/$1"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/$1"
+      "destination": "/apps/web/dist/index.html"
     }
   ]
 }
