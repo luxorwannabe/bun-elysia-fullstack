@@ -13,6 +13,7 @@ const app = new Elysia()
   )
   .use(
     swagger({
+      path: '/api/swagger',
       documentation: {
         info: {
           title: 'Bun Elysia Fullstack API',
@@ -64,21 +65,24 @@ const app = new Elysia()
     set.status = 500
     return { error: 'Internal server error' }
   })
-  .use(authRoutes)
-  .use(userRoutes)
-  .get('/', () => {
-    return {
-      status: 'success',
-      message: 'Bun Elysia Fullstack API is running',
-      docs: '/swagger',
-    }
-  })
+  .group('/api', (app) =>
+    app
+      .use(authRoutes)
+      .use(userRoutes)
+      .get('/', () => {
+        return {
+          status: 'success',
+          message: 'Bun Elysia Fullstack API is running',
+          docs: '/api/swagger',
+        }
+      })
+  )
 const port = Number(process.env.PORT) || 3000
 
 if (process.env.VERCEL !== '1') {
   app.listen(port)
   console.log(`🚀 Server running at http://${app.server?.hostname}:${app.server?.port}`)
-  console.log(`📖 API Documentation: http://${app.server?.hostname}:${app.server?.port}/swagger`)
+  console.log(`📖 API Documentation: http://${app.server?.hostname}:${app.server?.port}/api/swagger`)
 }
 
 export type App = typeof app

@@ -95,8 +95,8 @@ Once running, you can access the project components at these locations:
 | Component | URL | Port | Description |
 | :--- | :--- | :--- | :--- |
 | **Frontend** | [http://localhost:5173](http://localhost:5173) | `5173` | React Application (Vite) |
-| **Backend API** | [http://localhost:3000](http://localhost:3000) | `3000` | ElysiaJS Server |
-| **API Docs** | [http://localhost:3000/swagger](http://localhost:3000/swagger) | `3000` | Interactive Swagger UI |
+| **Backend API** | [http://localhost:3000/api](http://localhost:3000/api) | `3000` | ElysiaJS Server Status |
+| **API Docs** | [http://localhost:3000/api/swagger](http://localhost:3000/api/swagger) | `3000` | Interactive Swagger UI |
 
 ---
 
@@ -139,9 +139,9 @@ You **MUST** set these in **Settings > Environment Variables** on Vercel for the
 | `DB_USER` | Database username |
 | `DB_PASSWORD` | Database password |
 | `DB_NAME` | Database name |
-| `JWT_SECRET` | Secret for access tokens (short-lived, used for request authentication) |
-| `REFRESH_SECRET` | Secret for refresh tokens (long-lived, used to renew access tokens) |
-| `CORS_ORIGIN` | Your Vercel deployment URL (or leave blank for `*`) |
+| `JWT_SECRET` | Secret for access tokens (short-lived) |
+| `REFRESH_SECRET` | Secret for refresh tokens (long-lived) |
+| `CORS_ORIGIN` | Your Vercel deployment URL (e.g., `https://your-app.vercel.app`) |
 
 ### 2. Self-Hosting (VPS / Docker)
 If you want to run the application on your own server using **Bun** natively:
