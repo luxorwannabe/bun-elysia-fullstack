@@ -37,6 +37,14 @@ export class LocalProvider implements StorageProvider {
    * Uploads a file to the local filesystem
    */
   async upload(file: File | Blob, fileName?: string): Promise<string> {
+    // Explicitly reject local uploads on Vercel/Serverless to prevent confusion
+    if (process.env.VERCEL === '1') {
+      throw new Error(
+        'Local storage is not supported in Serverless environments (Vercel). ' +
+        'Please configure Cloudinary or S3 for production storage.'
+      );
+    }
+
     await this.ensureDir();
 
     // Use provided name or generate a safe one

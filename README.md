@@ -149,7 +149,7 @@ Demonstrates an advanced profile image management system:
 > **Testing Storage**: Simply change the `STORAGE_PROVIDER` value in your `.env` file and restart the server. The API will automatically adjust the storage logic without requiring any frontend code changes.
 
 > [!WARNING]
-> **Production Storage (Vercel)**: When deploying to Vercel, the local filesystem is **ephemeral** and **read-only** (except for `/tmp`). Files uploaded via the `local` provider will **NOT persist** and will be deleted periodically or upon redeployment. For production, it is highly recommended to use **Cloudinary** or **S3**.
+> **Production Storage (Vercel)**: When deploying to Vercel, the local filesystem is **ephemeral** and **read-only** (except for `/tmp`). The API is configured to **explicitly reject** local uploads when running on Vercel to prevent data loss and confusing errors. For production, please use **Cloudinary** or **S3**.
 
 ---
 
