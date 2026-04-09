@@ -68,26 +68,7 @@ cp apps/api/.env.example apps/api/.env
 | `NODE_ENV` | Environment mode (`development` / `production`) | `development` |
 | `PORT` | API Port | `3000` |
 
-#### 📂 Storage Configuration
-The API includes a vendor-agnostic storage layer. You can switch providers by changing the `STORAGE_PROVIDER` variable.
 
-> [!IMPORTANT]
-> **Provider Dependency**: You MUST fill in the corresponding environment variables for your chosen `STORAGE_PROVIDER`. For example, if you set it to `cloudinary`, the `CLOUDINARY_*` fields are mandatory. Failure to do so will result in upload errors.
-
-| Variable | Description | Options |
-| :--- | :--- | :--- |
-| `STORAGE_PROVIDER` | Active storage engine | `local`, `cloudinary`, `s3` |
-| `CLOUDINARY_CLOUD_NAME` | Cloudinary Cloud Name | *required for cloudinary* |
-| `CLOUDINARY_API_KEY` | Cloudinary API Key | *required for cloudinary* |
-| `CLOUDINARY_API_SECRET` | Cloudinary API Secret | *required for cloudinary* |
-| `S3_REGION` | S3 Region | *required for s3* |
-| `S3_ENDPOINT` | S3 Endpoint URL | *required for s3* |
-| `S3_ACCESS_KEY_ID` | S3 Access Key | *required for s3* |
-| `S3_SECRET_ACCESS_KEY` | S3 Secret Key | *required for s3* |
-| `S3_BUCKET` | S3 Bucket Name | *required for s3* |
-| `S3_PUBLIC_URL` | Public CDN/URL base for S3 | (optional) |
-| `LOCAL_STORAGE_PATH` | Server path for uploads | `public/uploads` |
-| `LOCAL_STORAGE_BASE_URL` | Web path for uploads | `/uploads` |
 
 
 ### 4. Database Migrations
@@ -130,14 +111,21 @@ Once running, you can access the project components at these locations:
 This project features a fully functional frontend implementation as a real-world development reference:
 
 ### 1. 🔐 Authenticated Flow
-- **Register**: User registration form with password validation and unique email checks.
-- **Login**: Complete JWT authentication flow (Access & Refresh Tokens) with secure session handling.
-- **Security Check**: Intuitive cursor states and button feedback (loading/disabled) for a premium user experience.
+- **Register**: User registration form with validation.
+  - Local: `http://localhost:5173/register`
+  - Production: `yourdomain.com/register`
+- **Login**: Complete JWT authentication flow.
+  - Local: `http://localhost:5173/login`
+  - Production: `yourdomain.com/login`
+- **Security Check**: Intuitive feedback for a premium user experience.
 
 ### 2. 👤 Dynamic Profile Management
-- **Inline Editing**: Ability to update Name and Email directly without page reloads.
-- **Advanced Security**: Password change form with a real-time password strength meter.
-- **Responsive Layout**: Fully optimized for Mobile and Desktop, including long text handling (word-wrap).
+- **Profile Interface**: Manage your identity and password.
+  - Local: `http://localhost:5173/profile` (Requires Login)
+  - Production: `yourdomain.com/profile`
+- **Inline Editing**: Update Name and Email directly.
+- **Advanced Security**: Real-time password strength meter.
+- **Responsive Layout**: Word-wrap optimized for Mobile & Desktop.
 
 ### 3. 📸 Image Processing & Multi-Cloud Upload
 Demonstrates an advanced profile image management system:
@@ -247,6 +235,45 @@ cd apps/web
 bun run build
 ```
 The build output is located in `apps/web/dist` and can be served using Nginx or other static hosting services.
+
+---
+
+---
+
+## 🎁 BONUS: Advanced Storage Setup
+
+The API includes a vendor-agnostic storage layer. You can switch providers by simply changing the `STORAGE_PROVIDER` variable in your `.env`.
+
+> [!IMPORTANT]
+> **Provider Dependency**: You MUST fill in the corresponding environment variables for your chosen provider.
+
+### 1. General Configuration
+| Variable | Description | Options / Default |
+| :--- | :--- | :--- |
+| `STORAGE_PROVIDER` | Active storage engine | `local`, `cloudinary`, `s3` |
+
+### 2. Cloudinary Setup
+| Variable | Description | Status |
+| :--- | :--- | :--- |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary Cloud Name | *Required* |
+| `CLOUDINARY_API_KEY` | Cloudinary API Key | *Required* |
+| `CLOUDINARY_API_SECRET` | Cloudinary API Secret | *Required* |
+
+### 3. S3 / R2 / DigitalOcean Setup
+| Variable | Description | Status |
+| :--- | :--- | :--- |
+| `S3_REGION` | S3 Region | *Required* |
+| `S3_ENDPOINT` | S3 Endpoint URL | *Required* |
+| `S3_ACCESS_KEY_ID` | S3 Access Key | *Required* |
+| `S3_SECRET_ACCESS_KEY` | S3 Secret Key | *Required* |
+| `S3_BUCKET` | S3 Bucket Name | *Required* |
+| `S3_PUBLIC_URL` | Public CDN URL base | (Optional) |
+
+### 4. Local Storage (Default)
+| Variable | Description | Default |
+| :--- | :--- | :--- |
+| `LOCAL_STORAGE_PATH` | Server path for uploads | `public/uploads` |
+| `LOCAL_STORAGE_BASE_URL` | Web path for uploads | `/uploads` |
 
 ---
 
