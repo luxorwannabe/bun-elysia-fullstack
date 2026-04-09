@@ -102,7 +102,7 @@ Once running, you can access the project components at these locations:
 | :--- | :--- | :--- | :--- |
 | **Frontend** | [http://localhost:5173](http://localhost:5173) | `5173` | React Application (Vite) |
 | **Backend API** | [http://localhost:3000/api](http://localhost:3000/api) | `3000` | ElysiaJS Server Status |
-| **API Docs** | [http://localhost:3000/api/docs](http://localhost:3000/api/docs) | `3000` | Interactive Swagger UI |
+| **API Docs** | [http://localhost:3000/docs](http://localhost:3000/docs) | `3000` | Interactive Swagger UI |
 
 ---
 

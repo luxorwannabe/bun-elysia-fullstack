@@ -15,9 +15,9 @@ describe('API Smoke Tests', () => {
     })
   })
 
-  test('GET /api/docs/json should return openapi spec', async () => {
+  test('GET /docs/json should return openapi spec', async () => {
     const response = await app.handle(
-      new Request('http://localhost/api/docs/json')
+      new Request('http://localhost/docs/json')
     )
     
     expect(response.status).toBe(200)

@@ -369,7 +369,7 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
               </div>
             ) : (
               <div className="flex items-center gap-4 group max-w-full">
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-white break-words whitespace-normal leading-tight">{user.name}</h1>
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-white wrap-break-word whitespace-normal leading-tight">{user.name}</h1>
                 <button 
                   onClick={() => {
                     setEditNameValue(user.name)
@@ -422,7 +422,7 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
               </div>
             ) : (
               <div className="flex items-center gap-3 group max-w-full">
-                <p className="text-indigo-400 font-medium text-base sm:text-lg leading-none break-all sm:break-words whitespace-normal">{user.email}</p>
+                <p className="text-indigo-400 font-medium text-base sm:text-lg leading-none break-all sm:wrap-break-word whitespace-normal">{user.email}</p>
                 <button 
                   onClick={() => {
                     setEditEmailValue(user.email)
