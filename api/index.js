@@ -1,12 +1,16 @@
-import app from "../apps/api/dist/index.js";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
+const app = require("../apps/api/dist/index.cjs");
 
 export default async function (req, res) {
-    // Find the Elysia instance
+    // Find the Elysia instance in the CJS module
+    // In CJS, the export might be directly the object or under .default
     const elysia = app.default || app;
 
     if (!elysia || typeof elysia.handle !== 'function') {
         res.statusCode = 500;
-        res.end("API Internal Server Error: Elysia handler not found");
+        res.end("API Internal Server Error: Elysia handler not found in CJS bundle");
         return;
     }
 
@@ -35,7 +39,7 @@ export default async function (req, res) {
         const body = await response.arrayBuffer();
         res.end(Buffer.from(body));
     } catch (error) {
-        console.error("Bridge Error:", error);
+        console.error("Bridge Error (CJS):", error);
         res.statusCode = 500;
         res.end("Internal Server Error");
     }
