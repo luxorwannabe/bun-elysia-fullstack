@@ -137,7 +137,8 @@ You **MUST** set these in **Settings > Environment Variables** on Vercel for the
 | `DB_USER` | Database username |
 | `DB_PASSWORD` | Database password |
 | `DB_NAME` | Database name |
-| `JWT_SECRET` | Secret key for signing tokens |
+| `JWT_SECRET` | Secret for access tokens (short-lived, used for request authentication) |
+| `REFRESH_SECRET` | Secret for refresh tokens (long-lived, used to renew access tokens) |
 | `CORS_ORIGIN` | Your Vercel deployment URL (or leave blank for `*`) |
 
 ### 2. Self-Hosting (VPS / Docker)
