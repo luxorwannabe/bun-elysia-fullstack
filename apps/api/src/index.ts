@@ -4,6 +4,17 @@ import { swagger } from '@elysiajs/swagger'
 import { authRoutes } from './routes/auth.js'
 import { userRoutes } from './routes/user.js'
 
+const routes = new Elysia()
+  .use(authRoutes)
+  .use(userRoutes)
+  .get('/', () => {
+    return {
+      status: 'success',
+      message: 'Bun Elysia Fullstack API is running',
+      docs: '/api/swagger',
+    }
+  })
+
 const app = new Elysia()
   .use(
     cors({
@@ -65,18 +76,8 @@ const app = new Elysia()
     set.status = 500
     return { error: 'Internal server error' }
   })
-  .group('/api', (app) =>
-    app
-      .use(authRoutes)
-      .use(userRoutes)
-      .get('/', () => {
-        return {
-          status: 'success',
-          message: 'Bun Elysia Fullstack API is running',
-          docs: '/api/swagger',
-        }
-      })
-  )
+  .group('/api', (app) => app.use(routes))
+
 const port = Number(process.env.PORT) || 3000
 
 if (process.env.VERCEL !== '1') {
@@ -85,7 +86,7 @@ if (process.env.VERCEL !== '1') {
   console.log(`📖 API Documentation: http://${app.server?.hostname}:${app.server?.port}/api/swagger`)
 }
 
-export type App = typeof app
+export type App = typeof routes
 export default app
 
 if (!process.env.CORS_ORIGIN) {
