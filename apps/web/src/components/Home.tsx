@@ -185,7 +185,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
               {[
                 { cmd: 'bun dev', desc: 'Launch Concurrent Dev Servers', label: 'Recommended' },
-                { cmd: 'bun test', desc: 'Run Comprehensive Test Suite', label: 'Unit/API' },
+                { cmd: 'bun run test', desc: 'Run Comprehensive Test Suite', label: 'Unit/API' },
                 { cmd: 'bun run build', desc: 'Generate Production Bundle', label: 'Deployment' },
                 { cmd: 'bun db:generate', desc: 'Sync Drizzle Schema Files', label: 'Database' },
                 { cmd: 'bun db:migrate', desc: 'Push Schema to Database', label: 'Database' },

@@ -149,7 +149,7 @@ Demonstrates an advanced profile image management system:
 | Run only API | `bun dev:api` |
 | Run only Web | `bun dev:web` |
 | New dependencies | `bun add <package> --filter @bun-elysia-fullstack/api` |
-| Run Unit Tests | `bun test` |
+| Run Unit Tests | `bun run test` |
 | Production Build | `bun run build` |
 
 ---
@@ -195,9 +195,9 @@ Set these in **Settings > Environment Variables** to allow the API to connect to
 This project includes a comprehensive test suite powered by **bun:test**.
 
 ### Running Tests
-To run all tests across the monorepo:
+To run all tests across the monorepo (API & Web):
 ```bash
-bun test
+bun run test
 ```
 
 ### Coverage
