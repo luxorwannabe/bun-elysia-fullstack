@@ -7,18 +7,26 @@ import { users } from '../db/schema.js'
 import { hashPassword, verifyPassword } from '../utils/password.js'
 import { rateLimit } from 'elysia-rate-limit'
 
+const getSecret = (key: string, fallback: string) => {
+  const secret = process.env[key]
+  if (!secret && process.env.NODE_ENV === 'production') {
+    throw new Error(`${key} must be defined in production!`)
+  }
+  return secret || fallback
+}
+
 export const authRoutes = new Elysia({ prefix: '/auth' })
   .use(
     jwt({
       name: 'jwt',
-      secret: process.env.JWT_SECRET!,
+      secret: getSecret('JWT_SECRET', 'fallback-jwt-secret-key-at-least-32-chars-long'),
       exp: '15m',
     })
   )
   .use(
     jwt({
       name: 'refreshJwt',
-      secret: process.env.REFRESH_SECRET!,
+      secret: getSecret('REFRESH_SECRET', 'fallback-refresh-secret-key-at-least-32-chars-long'),
       exp: '7d',
     })
   )

@@ -63,6 +63,7 @@ cp apps/api/.env.example apps/api/.env
 | `REFRESH_SECRET` | Secret for Refresh Token | *required* |
 | `DB_SSL` | Enable SSL for Cloud DB (TiDB/PlanetScale) | `false` |
 | `CORS_ORIGIN` | Allowed origin for CORS | `http://localhost:5173` |
+| `NODE_ENV` | Environment mode (`development` / `production`) | `development` |
 | `PORT` | API Port | `3000` |
 
 
@@ -143,6 +144,7 @@ Set these in **Settings > Environment Variables** to allow the API to connect to
 | `JWT_SECRET` | Secret for access tokens (minimum 32 characters recommended) |
 | `REFRESH_SECRET` | Secret for refresh tokens |
 | `CORS_ORIGIN` | Your Vercel deployment URL (e.g., `https://your-app.vercel.app`) |
+| `NODE_ENV` | Set to `production` to enable Secure Cookies & Strict Rate Limiting |
 
 - **Architecture**: The API is deployed as a *Serverless Function* via the bridge in `api/index.js`, while the Frontend is served as static assets from `apps/web/dist`.
 - **Node.js Compatibility**: This project uses `bcryptjs` for password hashing to ensure seamless operation on Vercel's Node.js runtime, as Bun-specific APIs are not available there.
@@ -165,7 +167,7 @@ bun test
 - **Node.js Compatibility**: Verified to work in both Bun and Node environments.
 
 ### 2. Self-Hosting (VPS / Docker)
-If you want to run the application on your own server using **Bun** natively:
+If you want to run the application on your own server using **Bun** natively, ensure you have a `.env` file with `NODE_ENV=production` set.
 
 #### Build API:
 ```bash
