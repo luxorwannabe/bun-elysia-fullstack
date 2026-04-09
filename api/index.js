@@ -1,12 +1,19 @@
-import appModule from "../apps/api/dist/index.js";
+import * as appModule from "../apps/api/dist/index.js";
 
 export default async function (req, res) {
-    // With Named Imports and ESM, appModule.default should be the clean elysia instance
-    const elysia = appModule.default || appModule;
+    console.log("API Bridge Request to:", req.url);
+
+    // Aggressively unwrap potential nested .default properties
+    let elysia = appModule;
+    while (elysia && typeof elysia.handle !== 'function' && elysia.default) {
+        elysia = elysia.default;
+    }
 
     if (!elysia || typeof elysia.handle !== 'function') {
+        console.error("Elysia handle not found! Module keys:", Object.keys(appModule));
+        console.error("Unwrapped object keys:", Object.keys(elysia || {}));
         res.statusCode = 500;
-        res.end("API Internal Server Error: Elysia handler not found in ESM bundle");
+        res.end("API Internal Server Error: Handler not found");
         return;
     }
 
@@ -32,7 +39,7 @@ export default async function (req, res) {
         const body = await response.arrayBuffer();
         res.end(Buffer.from(body));
     } catch (error) {
-        console.error("Bridge Error (ESM):", error);
+        console.error("Bridge Error (Final):", error);
         res.statusCode = 500;
         res.end("Internal Server Error");
     }
