@@ -124,7 +124,7 @@ This project is optimized for Vercel using a single-project monorepo setup.
 > - **Build Command**: `bun run build`
 > - **Output Directory**: `apps/web/dist`
 
-- **Architecture**: The API is deployed as a Serverless Function via Vercel's native Bun runtime, while the React app is served as static content.
+- **Architecture**: The API is deployed as a Serverless Function. To ensure compatibility with Vercel's Node.js environment, we use a bundled output (`dist/index.js`) generated during the build phase.
 - **Configuration**: See [vercel.json](./vercel.json) for internal routing and function settings.
 
 #### 🔑 Environment Variables
@@ -152,10 +152,10 @@ bun run build
 #### Run Production:
 You can run the bundled output or run the source directly with Bun for maximum performance:
 ```bash
-# Run the bundled output
+# Run the bundled output (Compatible with Node.js)
 bun apps/api/dist/index.js
 
-# OR run the source natively (recommended for pure Bun performance)
+# OR run the source natively (Recommended for pure Bun performance)
 bun run apps/api/src/index.ts
 ```
 

@@ -2,9 +2,9 @@ import Elysia, { t } from 'elysia'
 import { jwt } from '@elysiajs/jwt'
 import { cookie } from '@elysiajs/cookie'
 import { eq } from 'drizzle-orm'
-import { db } from '../db'
-import { users } from '../db/schema'
-import { hashPassword, verifyPassword } from '../utils/password'
+import { db } from '../db/index.ts'
+import { users } from '../db/schema.ts'
+import { hashPassword, verifyPassword } from '../utils/password.ts'
 import { rateLimit } from 'elysia-rate-limit'
 
 export const authRoutes = new Elysia({ prefix: '/auth' })
