@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/apps/api/index.js"
+      "destination": "/apps/api/src/index.ts"
     },
     {
       "source": "/(.*)",
@@ -12,9 +12,8 @@
   ],
   "builds": [
     {
-      "src": "apps/api/package.json",
-      "use": "@vercel/node",
-      "config": { "distDir": "dist" }
+      "src": "apps/api/src/index.ts",
+      "use": "@vercel/node"
     },
     {
       "src": "apps/web/package.json",
