@@ -1,8 +1,9 @@
 {
   "version": 2,
+  "bunVersion": "1.1.0",
   "functions": {
     "apps/api/src/index.ts": {
-      "runtime": "nodejs20.x"
+      "maxDuration": 10
     }
   },
   "rewrites": [

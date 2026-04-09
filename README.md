@@ -124,8 +124,21 @@ This project is optimized for Vercel using a single-project monorepo setup.
 > - **Build Command**: `bun run build`
 > - **Output Directory**: `apps/web/dist`
 
-- **Architecture**: The API is deployed as a Serverless Function via Vercel's Node.js runtime, while the React app is served as static content.
+- **Architecture**: The API is deployed as a Serverless Function via Vercel's native Bun runtime, while the React app is served as static content.
 - **Configuration**: See [vercel.json](./vercel.json) for internal routing and function settings.
+
+#### 🔑 Environment Variables
+You **MUST** set these in **Settings > Environment Variables** on Vercel for the API to connect to your database:
+
+| Variable | Description |
+| :--- | :--- |
+| `DB_HOST` | Your remote MySQL host (e.g., PlanetScale, RDS) |
+| `DB_PORT` | MySQL Port (usually `3306`) |
+| `DB_USER` | Database username |
+| `DB_PASSWORD` | Database password |
+| `DB_NAME` | Database name |
+| `JWT_SECRET` | Secret key for signing tokens |
+| `CORS_ORIGIN` | Your Vercel deployment URL (or leave blank for `*`) |
 
 ### 2. Self-Hosting (VPS / Docker)
 If you want to run the application on your own server using **Bun** natively:

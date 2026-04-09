@@ -73,12 +73,16 @@ const app = new Elysia()
       docs: '/swagger',
     }
   })
-  .listen(Number(process.env.PORT) || 3000)
+const port = Number(process.env.PORT) || 3000
+
+if (process.env.VERCEL !== '1') {
+  app.listen(port)
+  console.log(`🚀 Server running at http://${app.server?.hostname}:${app.server?.port}`)
+  console.log(`📖 API Documentation: http://${app.server?.hostname}:${app.server?.port}/swagger`)
+}
 
 export type App = typeof app
-
-console.log(`🚀 Server running at http://${app.server?.hostname}:${app.server?.port}`)
-console.log(`📖 API Documentation: http://${app.server?.hostname}:${app.server?.port}/swagger`)
+export default app
 
 if (!process.env.CORS_ORIGIN) {
   console.warn('⚠️  CORS_ORIGIN is not defined. CORS is running in a fully permissive state (*).')
