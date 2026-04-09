@@ -60,7 +60,8 @@ const app = new Elysia()
     }
     if (code === 'UNKNOWN') {
       const message = error instanceof Error ? error.message : 'Unknown error'
-      if (set.status === 401) {
+      // Pass through messages for unauthorized or custom internal errors (like our Vercel storage rejection)
+      if (set.status === 401 || set.status === 500) {
         return { error: message }
       }
     }

@@ -200,12 +200,13 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           setShowVercelWarning(true)
           setTimeout(() => setShowVercelWarning(false), 8000)
         }
-      } else {
-        alert('Failed to upload profile picture')
+      } else if (error) {
+        const errVal = error.value as { error?: string }
+        setProfileError(errVal?.error || 'Failed to upload profile picture')
       }
     } catch (err) {
       console.error(err)
-      alert('Error processing image')
+      setProfileError('An unexpected error occurred during upload')
     } finally {
       setIsUploadingAvatar(false)
       setTempImage(null)
