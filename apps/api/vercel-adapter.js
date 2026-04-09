@@ -1,19 +1,19 @@
 /**
- * Vercel Serverless Function bridge for Elysia.
+ * Vercel Serverless Function adapter for Elysia.
+ * This file adapts the Node.js (req, res) pattern to Elysia's Web Standard (Request/Response).
  */
 export default async function (req, res) {
     try {
-        // Dynamic import to catch potential initialization errors (missing env vars, syntax errors, etc.)
-        const elysiaModule = await import("../apps/api/dist/index.js");
+        // Dynamic import of the built API bundle
+        const elysiaModule = await import("./dist/index.js");
         
-        // Determine the Elysia instance (handle potential ESM default wrapping)
         let app = elysiaModule;
         while (app && typeof app.handle !== 'function' && app.default) {
             app = app.default;
         }
 
         if (!app || typeof app.handle !== 'function') {
-            console.error("API Bridge Error: Elysia handler not found after import.");
+            console.error("API Adapter Error: Elysia handler not found.");
             res.statusCode = 500;
             res.end("API Internal Server Error: Handler initialization failed.");
             return;
@@ -40,7 +40,7 @@ export default async function (req, res) {
         const body = await response.arrayBuffer();
         res.end(Buffer.from(body));
     } catch (error) {
-        console.error("Vercel Bridge Error:", error);
+        console.error("Vercel Adapter Error:", error);
         res.statusCode = 500;
         res.end("Internal Server Error");
     }
