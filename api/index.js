@@ -40,10 +40,8 @@ export default async function (req, res) {
         const body = await response.arrayBuffer();
         res.end(Buffer.from(body));
     } catch (error) {
-        console.error("--- Vercel Bridge Error (Initialization or Execution) ---");
-        console.error(error);
-        console.error("---------------------------------------------------------");
+        console.error("Vercel Bridge Error:", error);
         res.statusCode = 500;
-        res.end("Internal Server Error (Vercel Bridge)");
+        res.end("Internal Server Error");
     }
 }

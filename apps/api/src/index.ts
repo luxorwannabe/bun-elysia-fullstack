@@ -49,11 +49,8 @@ const app = new Elysia()
       }
     }
 
-    // Unmask the error in server logs
-    console.error('--- API Error ---')
-    console.error(`Code: ${code}`)
-    console.error(error)
-    console.error('-----------------')
+    // Log error for production monitoring
+    console.error(`[API Error] Code: ${code}`, error)
 
     set.status = 500
     return { error: 'Internal server error' }
