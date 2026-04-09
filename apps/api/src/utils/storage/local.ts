@@ -1,5 +1,6 @@
 import { join } from 'path';
-import { mkdir, unlink } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { mkdir, unlink, writeFile } from 'node:fs/promises';
 import type { StorageProvider } from './interface';
 
 /**
@@ -46,8 +47,8 @@ export class LocalProvider implements StorageProvider {
     
     const filePath = join(this.uploadDir, finalFileName);
 
-    // Using Bun.write for high performance
-    await Bun.write(filePath, await file.arrayBuffer());
+    // Using standard Node.js writeFile (Buffer.from for arrayBuffer)
+    await writeFile(filePath, Buffer.from(await file.arrayBuffer()));
 
     // Return the relative URL string
     return `${this.baseUrl}/${finalFileName}`;
@@ -62,8 +63,7 @@ export class LocalProvider implements StorageProvider {
 
     const filePath = join(this.uploadDir, fileName);
     try {
-      const file = Bun.file(filePath);
-      if (await file.exists()) {
+      if (existsSync(filePath)) {
         await unlink(filePath);
       }
     } catch (error) {
