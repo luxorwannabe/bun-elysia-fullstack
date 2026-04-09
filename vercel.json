@@ -2,7 +2,7 @@
   "version": 2,
   "bunVersion": "1.x",
   "functions": {
-    "apps/api/dist/index.js": {
+    "api/index.js": {
       "maxDuration": 10
     }
   },
@@ -10,11 +10,11 @@
   "rewrites": [
     {
       "source": "/api",
-      "destination": "/apps/api/dist/index.js"
+      "destination": "/api/index.js"
     },
     {
       "source": "/api/(.*)",
-      "destination": "/apps/api/dist/index.js"
+      "destination": "/api/index.js"
     },
     {
       "source": "/assets/(.*)",
