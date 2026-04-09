@@ -1,13 +1,15 @@
 import * as api from "../apps/api/dist/index.js";
 
-// Bridge to handle both ESM default and potential CJS wrapper
-const app = api.default || api;
-
 export default async function (request) {
+  // Move detection inside the handler to avoid "before initialization" errors
+  const instance = api.default || api;
+  const app = (instance && typeof instance.handle !== 'function' && instance.default) 
+    ? instance.default 
+    : instance;
+    
   if (!app || typeof app.handle !== 'function') {
-    // One more check in case of deep default nesting
-    const actualApp = app.default || app;
-    return actualApp.handle(request);
+    throw new Error("Elysia instance not found in bundle. Check build exports.");
   }
+
   return app.handle(request);
 }
