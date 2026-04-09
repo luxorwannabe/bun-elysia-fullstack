@@ -96,7 +96,7 @@ Once running, you can access the project components at these locations:
 | :--- | :--- | :--- | :--- |
 | **Frontend** | [http://localhost:5173](http://localhost:5173) | `5173` | React Application (Vite) |
 | **Backend API** | [http://localhost:3000/api](http://localhost:3000/api) | `3000` | ElysiaJS Server Status |
-| **API Docs** | [http://localhost:3000/api/swagger](http://localhost:3000/api/swagger) | `3000` | Interactive Swagger UI |
+| **API Docs** | [http://localhost:3000/api/docs](http://localhost:3000/api/docs) | `3000` | Interactive Swagger UI |
 
 ---
 
@@ -116,32 +116,32 @@ Once running, you can access the project components at these locations:
 
 This project is configured to be flexible for various deployment methods:
 
-### 1. Vercel (Recommended for Frontend & API)
+### 1. Vercel (Recommended)
 
-This project is optimized for Vercel using a single-project monorepo setup.
+This project is optimized for Vercel as a Monorepo. To ensure a successful deployment, please follow these settings in your Vercel Project Dashboard:
 
-> [!IMPORTANT]
-> To deploy this project successfully, you **MUST** configure these settings in your Vercel Project Dashboard (**Settings > General**):
-> - **Root Directory**: `./` (The root of the repository)
-> - **Build Command**: `bun run build`
-> - **Output Directory**: `apps/web/dist`
-
-- **Architecture**: The API is deployed as a Serverless Function. To ensure compatibility with Vercel's Node.js environment, we use a bundled output (`dist/index.js`) generated during the build phase.
-- **Configuration**: See [vercel.json](./vercel.json) for internal routing and function settings.
+#### 📂 Framework & Build Settings
+Configure these in **Settings > General > Build & Development Settings**:
+- **Framework Preset**: `Other`
+- **Root Directory**: `./` (Root of the repository)
+- **Build Command**: `bun run build`
+- **Output Directory**: `apps/web/dist`
 
 #### 🔑 Environment Variables
-You **MUST** set these in **Settings > Environment Variables** on Vercel for the API to connect to your database:
+Set these in **Settings > Environment Variables** to allow the API to connect to your database and handle JWT:
 
 | Variable | Description |
 | :--- | :--- |
-| `DB_HOST` | Your remote MySQL host (e.g., PlanetScale, RDS) |
+| `DB_HOST` | Your remote MySQL host (e.g., PlanetScale, TiDB, RDS) |
 | `DB_PORT` | MySQL Port (usually `3306`) |
 | `DB_USER` | Database username |
 | `DB_PASSWORD` | Database password |
 | `DB_NAME` | Database name |
-| `JWT_SECRET` | Secret for access tokens (short-lived) |
-| `REFRESH_SECRET` | Secret for refresh tokens (long-lived) |
+| `JWT_SECRET` | Secret for access tokens (minimum 32 characters recommended) |
+| `REFRESH_SECRET` | Secret for refresh tokens |
 | `CORS_ORIGIN` | Your Vercel deployment URL (e.g., `https://your-app.vercel.app`) |
+
+- **Architecture**: The API is deployed as a *Serverless Function* via the bridge in `api/index.js`, while the Frontend is served as static assets from `apps/web/dist`.
 
 ### 2. Self-Hosting (VPS / Docker)
 If you want to run the application on your own server using **Bun** natively:

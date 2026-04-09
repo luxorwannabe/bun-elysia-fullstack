@@ -11,7 +11,7 @@ const routes = new Elysia()
     return {
       status: 'success',
       message: 'Bun Elysia Fullstack API is running',
-      docs: '/api/swagger',
+      docs: '/api/docs',
     }
   })
 
@@ -20,31 +20,6 @@ const app = new Elysia()
     cors({
       origin: process.env.CORS_ORIGIN || true,
       credentials: true,
-    })
-  )
-  .use(
-    swagger({
-      path: '/api/swagger',
-      documentation: {
-        info: {
-          title: 'Bun Elysia Fullstack API',
-          version: '0.1.0',
-          description: 'REST API authentication using Bun + ElysiaJS + Drizzle ORM + MySQL',
-        },
-        tags: [
-          { name: 'Auth', description: 'Authentication endpoints (register, login, refresh, logout)' },
-          { name: 'User', description: 'User profile endpoints (requires Bearer token)' },
-        ],
-        components: {
-          securitySchemes: {
-            bearerAuth: {
-              type: 'http',
-              scheme: 'bearer',
-              bearerFormat: 'JWT',
-            },
-          },
-        },
-      },
     })
   )
   .onError(({ code, error, set }) => {
@@ -76,14 +51,45 @@ const app = new Elysia()
     set.status = 500
     return { error: 'Internal server error' }
   })
-  .group('/api', (app) => app.use(routes))
+  .group('/api', (app) =>
+    app
+      .use(
+        swagger({
+          path: '/docs',
+          documentation: {
+            info: {
+              title: 'Bun Elysia Fullstack API',
+              version: '0.1.0',
+              description: 'REST API authentication using Bun + ElysiaJS + Drizzle ORM + MySQL',
+            },
+            tags: [
+              {
+                name: 'Auth',
+                description: 'Authentication endpoints (register, login, refresh, logout)',
+              },
+              { name: 'User', description: 'User profile endpoints (requires Bearer token)' },
+            ],
+            components: {
+              securitySchemes: {
+                bearerAuth: {
+                  type: 'http',
+                  scheme: 'bearer',
+                  bearerFormat: 'JWT',
+                },
+              },
+            },
+          },
+        })
+      )
+      .use(routes)
+  )
 
 const port = Number(process.env.PORT) || 3000
 
 if (process.env.VERCEL !== '1') {
   app.listen(port)
   console.log(`🚀 Server running at http://${app.server?.hostname}:${app.server?.port}`)
-  console.log(`📖 API Documentation: http://${app.server?.hostname}:${app.server?.port}/api/swagger`)
+  console.log(`📖 API Documentation: http://${app.server?.hostname}:${app.server?.port}/api/docs`)
 }
 
 export type App = typeof routes
