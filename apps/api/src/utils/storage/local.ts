@@ -22,6 +22,9 @@ export class LocalProvider implements StorageProvider {
    * Ensure the upload directory exists
    */
   private async ensureDir() {
+    // Skip directory creation on Vercel/Serverless
+    if (process.env.VERCEL === '1') return;
+
     try {
       await mkdir(this.uploadDir, { recursive: true });
     } catch (error) {

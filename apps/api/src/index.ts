@@ -6,10 +6,12 @@ import { staticPlugin } from '@elysiajs/static'
 import { authRoutes } from './routes/auth.js'
 import { userRoutes } from './routes/user.js'
 
-// Ensure local upload directory exists for static plugin
-const uploadDir = 'public/uploads'
-if (!existsSync(uploadDir)) {
-  mkdirSync(uploadDir, { recursive: true })
+// Ensure local upload directory exists for static plugin (skip on Vercel)
+if (process.env.VERCEL !== '1') {
+  const uploadDir = 'public/uploads'
+  if (!existsSync(uploadDir)) {
+    mkdirSync(uploadDir, { recursive: true })
+  }
 }
 
 const routes = new Elysia()
