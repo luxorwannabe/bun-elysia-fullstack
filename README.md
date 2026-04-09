@@ -31,6 +31,8 @@ This project uses **Bun Workspaces** to manage a monorepo structure:
 - **🛡️ Typesafety**: End-to-end typesafety between Backend and Frontend using **Elysia Eden**.
 - **🎨 Modern UI**: Styled with the latest TailwindCSS 4 and React 19 components.
 - **📊 Database Ready**: Pre-configured Drizzle ORM for schema management and migrations.
+- **🖼️ Fullstack Samples**: Includes production-ready Login, Register, and Profile management pages.
+- **☁️ Multi-Cloud Storage**: Vendor-agnostic storage system supporting Local, Cloudinary, and S3-compatible providers out of the box.
 
 ---
 
@@ -66,6 +68,27 @@ cp apps/api/.env.example apps/api/.env
 | `NODE_ENV` | Environment mode (`development` / `production`) | `development` |
 | `PORT` | API Port | `3000` |
 
+#### 📂 Storage Configuration
+The API includes a vendor-agnostic storage layer. You can switch providers by changing the `STORAGE_PROVIDER` variable.
+
+> [!IMPORTANT]
+> **Provider Dependency**: You MUST fill in the corresponding environment variables for your chosen `STORAGE_PROVIDER`. For example, if you set it to `cloudinary`, the `CLOUDINARY_*` fields are mandatory. Failure to do so will result in upload errors.
+
+| Variable | Description | Options |
+| :--- | :--- | :--- |
+| `STORAGE_PROVIDER` | Active storage engine | `local`, `cloudinary`, `s3` |
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary Cloud Name | *required for cloudinary* |
+| `CLOUDINARY_API_KEY` | Cloudinary API Key | *required for cloudinary* |
+| `CLOUDINARY_API_SECRET` | Cloudinary API Secret | *required for cloudinary* |
+| `S3_REGION` | S3 Region | *required for s3* |
+| `S3_ENDPOINT` | S3 Endpoint URL | *required for s3* |
+| `S3_ACCESS_KEY_ID` | S3 Access Key | *required for s3* |
+| `S3_SECRET_ACCESS_KEY` | S3 Secret Key | *required for s3* |
+| `S3_BUCKET` | S3 Bucket Name | *required for s3* |
+| `S3_PUBLIC_URL` | Public CDN/URL base for S3 | (optional) |
+| `LOCAL_STORAGE_PATH` | Server path for uploads | `public/uploads` |
+| `LOCAL_STORAGE_BASE_URL` | Web path for uploads | `/uploads` |
+
 
 ### 4. Database Migrations
 > [!NOTE]
@@ -99,6 +122,31 @@ Once running, you can access the project components at these locations:
 | **Frontend** | [http://localhost:5173](http://localhost:5173) | `5173` | React Application (Vite) |
 | **Backend API** | [http://localhost:3000/api](http://localhost:3000/api) | `3000` | ElysiaJS Server Status |
 | **API Docs** | [http://localhost:3000/api/docs](http://localhost:3000/api/docs) | `3000` | Interactive Swagger UI |
+
+---
+
+## 🖼️ Included Application Samples
+
+This project features a fully functional frontend implementation as a real-world development reference:
+
+### 1. 🔐 Authenticated Flow
+- **Register**: User registration form with password validation and unique email checks.
+- **Login**: Complete JWT authentication flow (Access & Refresh Tokens) with secure session handling.
+- **Security Check**: Intuitive cursor states and button feedback (loading/disabled) for a premium user experience.
+
+### 2. 👤 Dynamic Profile Management
+- **Inline Editing**: Ability to update Name and Email directly without page reloads.
+- **Advanced Security**: Password change form with a real-time password strength meter.
+- **Responsive Layout**: Fully optimized for Mobile and Desktop, including long text handling (word-wrap).
+
+### 3. 📸 Image Processing & Multi-Cloud Upload
+Demonstrates an advanced profile image management system:
+- **Interactive Cropping**: Powered by `react-easy-crop` for precise client-side image cropping and rotation before upload.
+- **Smart Upload**: Images are automatically uploaded to the configured provider (`local`, `cloudinary`, or `s3`).
+- **Seamless Integration**: Backend automatically purges old image files when a user uploads a new profile picture to optimize storage space.
+
+> [!TIP]
+> **Testing Storage**: Simply change the `STORAGE_PROVIDER` value in your `.env` file and restart the server. The API will automatically adjust the storage logic without requiring any frontend code changes.
 
 ---
 

@@ -1,9 +1,11 @@
 import { Elysia, t } from 'elysia'
+import sharp from 'sharp'
 import { eq } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { users } from '../db/schema.js'
 import { authMiddleware } from '../middleware/auth.js'
 import { hashPassword, verifyPassword } from '../utils/password.js'
+import { storage } from '../utils/storage/factory.js'
 
 export const userRoutes = new Elysia({ prefix: '/user' })
   .use(authMiddleware)
@@ -15,6 +17,7 @@ export const userRoutes = new Elysia({ prefix: '/user' })
           id: users.id,
           email: users.email,
           name: users.name,
+          avatarUrl: users.avatarUrl,
           createdAt: users.createdAt,
           updatedAt: users.updatedAt,
         })
@@ -26,7 +29,13 @@ export const userRoutes = new Elysia({ prefix: '/user' })
         return { error: 'User not found' }
       }
 
-      return user
+      return {
+        ...user,
+        storage: {
+          provider: process.env.STORAGE_PROVIDER || 'local',
+          isServerless: process.env.VERCEL === '1'
+        }
+      }
     },
     {
       response: {
@@ -34,8 +43,13 @@ export const userRoutes = new Elysia({ prefix: '/user' })
           id: t.Number(),
           email: t.String(),
           name: t.String(),
+          avatarUrl: t.Optional(t.Nullable(t.String())),
           createdAt: t.Optional(t.Any()),
           updatedAt: t.Optional(t.Any()),
+          storage: t.Object({
+            provider: t.String(),
+            isServerless: t.Boolean()
+          })
         }),
         404: t.Object({
           error: t.String(),
@@ -82,6 +96,7 @@ export const userRoutes = new Elysia({ prefix: '/user' })
           id: users.id,
           email: users.email,
           name: users.name,
+          avatarUrl: users.avatarUrl,
           updatedAt: users.updatedAt,
         })
         .from(users)
@@ -99,6 +114,7 @@ export const userRoutes = new Elysia({ prefix: '/user' })
           id: t.Number(),
           email: t.String(),
           name: t.String(),
+          avatarUrl: t.Optional(t.Nullable(t.String())),
           updatedAt: t.Optional(t.Any()),
         }),
         400: t.Object({
@@ -165,6 +181,81 @@ export const userRoutes = new Elysia({ prefix: '/user' })
         tags: ['User'],
         summary: 'Change user password',
         description: "Change the authenticated user's password. Requires current password.",
+        security: [{ bearerAuth: [] }],
+      },
+    }
+  )
+  .put(
+    '/avatar',
+    async ({ userId, body, set }) => {
+      const { file } = body
+
+      if (!file) {
+        set.status = 400
+        return { error: 'No file uploaded' }
+      }
+
+      try {
+        // Process image with Sharp
+        // Resize to 350x350, crop to center, and convert to WebP for optimization
+        const processedImageBuffer = await sharp(await file.arrayBuffer())
+          .resize(350, 350, { fit: 'cover' })
+          .webp({ quality: 80 })
+          .toBuffer();
+
+        // Create a new File-like object from the buffer for the storage providers
+        const processedFile = new Blob([new Uint8Array(processedImageBuffer)], { type: 'image/webp' });
+
+        // Upload using our generic storage provider
+        const avatarUrl = await storage.upload(processedFile, `avatar-${userId}-${Date.now()}.webp`);
+
+        // Get the old avatar to delete it if necessary
+        const [user] = await db
+          .select({ avatarUrl: users.avatarUrl })
+          .from(users)
+          .where(eq(users.id, userId))
+
+        // Delete old avatar if it exists
+        if (user?.avatarUrl) {
+          try {
+            await storage.delete(user.avatarUrl)
+          } catch (e) {
+            console.error('Failed to delete old avatar:', e)
+          }
+        }
+
+        // Update database with new URL
+        await db.update(users).set({ avatarUrl }).where(eq(users.id, userId))
+
+        return { avatarUrl }
+      } catch (error) {
+        console.error('Upload error:', error)
+        set.status = 500
+        return { error: 'Failed to upload image' }
+      }
+    },
+    {
+      body: t.Object({
+        file: t.File({
+          type: ['image/jpeg', 'image/png', 'image/webp'],
+          maxSize: '2m', // 2MB limit
+        }),
+      }),
+      response: {
+        200: t.Object({
+          avatarUrl: t.String(),
+        }),
+        400: t.Object({
+          error: t.String(),
+        }),
+        500: t.Object({
+          error: t.String(),
+        }),
+      },
+      detail: {
+        tags: ['User'],
+        summary: 'Update user avatar',
+        description: 'Upload a new profile picture. Requires a Bearer token.',
         security: [{ bearerAuth: [] }],
       },
     }

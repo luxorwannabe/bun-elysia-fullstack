@@ -1,8 +1,16 @@
 import { Elysia } from 'elysia'
+import { mkdirSync, existsSync } from 'node:fs'
 import { cors } from '@elysiajs/cors'
 import { swagger } from '@elysiajs/swagger'
+import { staticPlugin } from '@elysiajs/static'
 import { authRoutes } from './routes/auth.js'
 import { userRoutes } from './routes/user.js'
+
+// Ensure local upload directory exists for static plugin
+const uploadDir = 'public/uploads'
+if (!existsSync(uploadDir)) {
+  mkdirSync(uploadDir, { recursive: true })
+}
 
 const routes = new Elysia()
   .use(authRoutes)
@@ -20,6 +28,12 @@ const app = new Elysia()
     cors({
       origin: process.env.CORS_ORIGIN || true,
       credentials: true,
+    })
+  )
+  .use(
+    await staticPlugin({
+      assets: 'public/uploads',
+      prefix: '/uploads',
     })
   )
   .onError(({ code, error, set }) => {
