@@ -3,21 +3,23 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/apps/api/dist/index.js"
+      "destination": "/apps/api/index.js"
     },
     {
       "source": "/(.*)",
-      "destination": "/apps/web/dist/$1"
+      "destination": "/apps/web/$1"
     }
   ],
   "builds": [
     {
       "src": "apps/api/package.json",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": { "distDir": "dist" }
     },
     {
       "src": "apps/web/package.json",
-      "use": "@vercel/static-build"
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
     }
   ]
 }
