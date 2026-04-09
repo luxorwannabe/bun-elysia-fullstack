@@ -1,4 +1,4 @@
-import Elysia, { t } from 'elysia'
+import { Elysia, t } from 'elysia'
 import { eq } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { users } from '../db/schema.js'

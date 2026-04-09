@@ -1,4 +1,4 @@
-import Elysia, { t } from 'elysia'
+import { Elysia, t } from 'elysia'
 import { jwt } from '@elysiajs/jwt'
 import { cookie } from '@elysiajs/cookie'
 import { eq } from 'drizzle-orm'
