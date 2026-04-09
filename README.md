@@ -115,9 +115,17 @@ Once running, you can access the project components at these locations:
 This project is configured to be flexible for various deployment methods:
 
 ### 1. Vercel (Recommended for Frontend & API)
-This project uses a bundling strategy to ensure full compatibility with **Vercel Serverless Functions**.
-- **API**: Bundled into a single `dist/index.js` file with Node.js target (for maximum compatibility) and minified (only ~1.9MB).
-- **Configuration**: See [vercel.json](./vercel.json) in the root directory for monorepo routing settings.
+
+This project is optimized for Vercel using a single-project monorepo setup.
+
+> [!IMPORTANT]
+> To deploy this project successfully, you **MUST** configure these settings in your Vercel Project Dashboard (**Settings > General**):
+> - **Root Directory**: `./` (The root of the repository)
+> - **Build Command**: `bun run build`
+> - **Output Directory**: `apps/web/dist`
+
+- **Architecture**: The API is deployed as a Serverless Function via Vercel's Node.js runtime, while the React app is served as static content.
+- **Configuration**: See [vercel.json](./vercel.json) for internal routing and function settings.
 
 ### 2. Self-Hosting (VPS / Docker)
 If you want to run the application on your own server using **Bun** natively:
