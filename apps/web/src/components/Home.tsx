@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 interface HomeProps {
@@ -6,9 +6,23 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
+  const [showScrollTop, setShowScrollTop] = useState(false)
+
   useEffect(() => {
     document.title = 'Home | Bun Elysia Fullstack'
+    
+    const handleScroll = () => {
+      // Appear when scrolled down more than 400px
+      setShowScrollTop(window.scrollY > 400)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
   return (
     <div className="relative w-full overflow-x-hidden font-sans selection:bg-pink-500/30 selection:text-pink-200 scroll-smooth">
       {/* Background Decorative Glows */}
@@ -23,7 +37,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
       <div className="w-full max-w-6xl mx-auto py-20 px-6 sm:px-10 space-y-28 pb-32">
         
         {/* --- Hero Section --- */}
-        <section className="flex flex-col items-center text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700 pt-10">
+        <section id="hero" className="flex flex-col items-center text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700 pt-10 relative">
           <div className="inline-flex items-center px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-bold tracking-widest text-slate-400 uppercase mb-4 shadow-xl">
             <span className="flex h-2 w-2 rounded-full bg-pink-500 mr-2 animate-ping"></span>
             Version 1.0.0 Now Available
@@ -75,7 +89,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </section>
 
         {/* --- Key Features Section --- */}
-        <section className="space-y-16">
+        <section id="features" className="space-y-16 scroll-mt-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-12">
              <div className="space-y-6">
                 <span className="text-pink-500 font-black tracking-widest text-xs uppercase px-3 py-1 bg-pink-500/10 rounded-lg">Performance First</span>
@@ -117,7 +131,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                 icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M8 7h6"/><path d="M8 11h8"/></svg> 
               },
             ].map((f) => (
-              <div key={f.title} className="p-10 rounded-[40px] border border-white/5 bg-white/5 backdrop-blur-sm group hover:border-white/20 hover:bg-white/10 transition-all duration-500 shadow-2xl overflow-hidden relative">
+              <div key={f.title} className="p-10 rounded-3xl md:rounded-[40px] border border-white/5 bg-white/5 backdrop-blur-sm group hover:border-white/20 hover:bg-white/10 transition-all duration-500 shadow-2xl overflow-hidden relative">
                 <div className="absolute -right-4 -top-4 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
                 <div className="p-4 w-fit rounded-2xl bg-slate-950 border border-white/5 mb-8 group-hover:scale-110 group-hover:rotate-6 transition-transform shadow-inner">
                   {f.icon}
@@ -130,7 +144,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </section>
 
         {/* --- Quick Start Stepper --- */}
-        <section className="space-y-16 py-12">
+        <section id="steps" className="space-y-16 py-12 scroll-mt-20">
            <div className="text-center space-y-4">
               <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter">Get Running in <span className="bg-linear-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent italic underline decoration-transparent hover:decoration-indigo-500/50 underline-offset-8">Minutes.</span></h2>
               <p className="text-slate-500 max-w-xl mx-auto text-lg font-medium">Follow these simple steps to launch your fullstack application.</p>
@@ -143,7 +157,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                 { step: '03', title: 'Config', desc: 'Setup .env from .env.example.' },
                 { step: '04', title: 'Launch', desc: 'Run `bun dev` to start apps.' },
               ].map((s, i) => (
-                <div key={i} className="shrink-0 min-w-[240px] p-8 rounded-[35px] bg-slate-900 border border-white/5 relative group transition-all duration-300 hover:border-indigo-500/30">
+                <div key={i} className="shrink-0 min-w-[240px] p-8 rounded-2xl md:rounded-[35px] bg-slate-900 border border-white/5 relative group transition-all duration-300 hover:border-indigo-500/30">
                    <div className="text-6xl font-black text-indigo-500/10 absolute top-4 right-8 group-hover:text-indigo-500/20 transition-colors uppercase italic">{s.step}</div>
                    <div className="space-y-3 relative z-10">
                       <h4 className="text-xl font-black text-white">{s.title}</h4>
@@ -156,7 +170,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </section>
 
         {/* --- CLI Developer Toolkit --- */}
-        <section id="cli-toolkit" className="p-12 rounded-[50px] border border-white/5 bg-slate-950/50 backdrop-blur-xl space-y-8 relative overflow-hidden">
+        <section id="cli-toolkit" className="p-12 rounded-3xl md:rounded-[50px] border border-white/5 bg-slate-950/50 backdrop-blur-xl space-y-8 relative overflow-hidden">
            <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 via-transparent to-pink-500/5 opacity-50"></div>
            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative z-10">
               <div className="space-y-3">
@@ -189,9 +203,9 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </section>
 
         {/* --- Architecture & Tech Stack (Enhanced) --- */}
-        <section className="space-y-16">
+        <section id="architecture" className="space-y-16 scroll-mt-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div className="relative aspect-square md:aspect-video lg:aspect-square rounded-[40px] bg-slate-900 border border-white/10 overflow-hidden shadow-2xl group flex flex-col order-2 lg:order-1">
+            <div className="relative aspect-square md:aspect-video lg:aspect-square rounded-3xl md:rounded-[40px] bg-slate-900 border border-white/10 overflow-hidden shadow-2xl group flex flex-col order-2 lg:order-1">
                <div className="p-4 border-b border-white/5 flex gap-2 items-center bg-black/40">
                   <div className="w-3 h-3 rounded-full bg-red-500/30"></div>
                   <div className="w-3 h-3 rounded-full bg-yellow-500/30"></div>
@@ -252,7 +266,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </section>
 
         {/* --- Security Deep-Dive --- */}
-        <section className="space-y-16 py-12">
+        <section id="security" className="space-y-16 py-12 scroll-mt-20">
            <div className="text-center space-y-4">
               <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter">Security by <span className="bg-linear-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent italic">Default.</span></h2>
               <p className="text-slate-500 max-w-xl mx-auto text-lg font-medium">Protecting your users shouldn't be an afterthought.</p>
@@ -265,7 +279,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                 { t: 'Rate Limiting', d: 'Production-ready protection against brute-force attempts.', ic: '⏲️' },
                 { t: 'Typesafe Refs', d: 'Strict schema validation on every single API payload.', ic: '✅' },
               ].map((s, i) => (
-                <div key={i} className="p-8 rounded-[40px] bg-white/2 border border-white/5 hover:bg-white/5 transition-colors group">
+                <div key={i} className="p-8 rounded-3xl md:rounded-[40px] bg-white/2 border border-white/5 hover:bg-white/5 transition-colors group">
                    <div className="text-3xl mb-6 group-hover:scale-125 transition-transform">{s.ic}</div>
                    <h4 className="text-lg font-bold text-white mb-2">{s.t}</h4>
                    <p className="text-slate-500 text-xs leading-relaxed">{s.d}</p>
@@ -275,7 +289,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </section>
 
         {/* --- Storage & Deployment (Revised) --- */}
-        <section className="relative py-24 rounded-[60px] border border-white/10 bg-linear-to-br from-indigo-500/3 to-slate-950 overflow-hidden px-8 md:px-16">
+        <section id="storage" className="relative py-24 rounded-3xl md:rounded-[60px] border border-white/10 bg-linear-to-br from-indigo-500/3 to-slate-950 overflow-hidden px-8 md:px-16 scroll-mt-20">
            <div className="absolute right-[5%] top-[10%] w-[300px] h-[300px] bg-pink-500/5 rounded-full blur-[100px] animate-pulse"></div>
            <div className="absolute left-[10%] bottom-[10%] w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[120px] animate-pulse delay-1000"></div>
            
@@ -295,7 +309,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
               </div>
               
               <div className="space-y-8">
-                 <div className="p-10 rounded-[45px] bg-black/40 border border-white/5 backdrop-blur-md space-y-6 relative group overflow-hidden">
+                 <div className="p-10 rounded-3xl md:rounded-[45px] bg-black/40 border border-white/5 backdrop-blur-md space-y-6 relative group overflow-hidden">
                     <div className="absolute inset-0 bg-linear-to-r from-pink-500/5 transition-opacity opacity-0 group-hover:opacity-100 duration-500"></div>
                     <div className="flex justify-between items-center relative z-10">
                        <h4 className="text-white font-bold uppercase tracking-widest text-xs opacity-50">Cloud Deployment</h4>
@@ -317,13 +331,13 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </section>
 
         {/* --- Environment Variables Guide --- */}
-        <section className="space-y-12">
+        <section id="config" className="space-y-12 scroll-mt-20">
            <div className="text-center">
               <h2 className="text-3xl md:text-5xl font-black text-white tracking-tighter">Configuration <span className="bg-linear-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">Matrix</span></h2>
               <p className="text-slate-500 font-medium py-4 max-w-lg mx-auto">Key environment variables required to run your production instances.</p>
            </div>
            
-           <div className="overflow-x-auto rounded-[40px] border border-white/5 bg-slate-900/40 backdrop-blur-sm">
+           <div className="overflow-x-auto rounded-3xl md:rounded-[40px] border border-white/5 bg-slate-900/40 backdrop-blur-sm">
               <table className="w-full text-left text-sm border-collapse">
                  <thead>
                     <tr className="border-b border-white/10">
@@ -355,7 +369,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </section>
 
         {/* --- Final CTA --- */}
-        <section className="py-24 relative overflow-hidden rounded-[70px] border border-white/10 bg-slate-900/50 backdrop-blur-2xl text-center shadow-2xl">
+        <section className="py-24 relative overflow-hidden rounded-3xl md:rounded-[70px] border border-white/10 bg-slate-900/50 backdrop-blur-2xl text-center shadow-2xl">
            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-pink-500/10 to-transparent -z-10 animate-pulse"></div>
            <div className="space-y-10 relative z-10 px-6 max-w-4xl mx-auto">
               <h2 className="text-5xl md:text-8xl font-black text-white tracking-tighter">Ready to <span className="bg-linear-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent italic">Deploy.</span></h2>
@@ -406,6 +420,17 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </footer>
 
       </div>
+
+      {/* Floating Scroll to Top Button */}
+      <button
+        onClick={scrollToTop}
+        className={`hidden md:flex fixed bottom-8 right-8 p-4 rounded-full cursor-pointer bg-white/10 border border-white/10 backdrop-blur-xl text-white shadow-2xl transition-all duration-500 hover:bg-white/20 hover:scale-110 active:scale-95 z-50 group ${
+          showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+        }`}
+        aria-label="Scroll to top"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:-translate-y-1 transition-transform"><path d="m18 15-6-6-6 6"/></svg>
+      </button>
     </div>
   )
 }
