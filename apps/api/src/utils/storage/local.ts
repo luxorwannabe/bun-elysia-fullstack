@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, unlink } from 'node:fs/promises';
 import type { StorageProvider } from './interface';
 
 /**
@@ -61,7 +61,6 @@ export class LocalProvider implements StorageProvider {
     try {
       const file = Bun.file(filePath);
       if (await file.exists()) {
-        const { unlink } = require('node:fs/promises');
         await unlink(filePath);
       }
     } catch (error) {

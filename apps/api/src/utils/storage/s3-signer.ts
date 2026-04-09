@@ -35,7 +35,7 @@ export async function signS3Request(options: S3SignOptions) {
   const path = urlObj.pathname;
   
   const now = new Date();
-  const amzDate = now.toISOString().replace(/[:\-]|\.\d{3}/g, '');
+  const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, '');
   const dateStamp = amzDate.slice(0, 8);
 
   const canonicalHeaders = `host:${host}\nx-amz-content-sha256:${payloadHash}\nx-amz-date:${amzDate}\n`;

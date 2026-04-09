@@ -3,6 +3,13 @@ import { api } from '../lib/api'
 import { ImageCropper } from './ImageCropper'
 import { getCroppedImg } from '../lib/image'
 
+interface Area {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}
+
 interface UserProfile {
   id: number
   email: string
@@ -44,7 +51,7 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const [hasImageError, setHasImageError] = useState(false)
   const [cropModalOpen, setCropModalOpen] = useState(false)
   const [tempImage, setTempImage] = useState<string | null>(null)
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null)
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
   const [tempRotation, setTempRotation] = useState(0)
   
   // Storage Warning State
@@ -164,7 +171,7 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     e.target.value = ''
   }
 
-  const handleCropComplete = (pixelCrop: any, rotation: number) => {
+  const handleCropComplete = (pixelCrop: Area, rotation: number) => {
     setCroppedAreaPixels(pixelCrop)
     setTempRotation(rotation)
   }

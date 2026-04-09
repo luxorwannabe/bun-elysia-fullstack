@@ -1,9 +1,16 @@
 import React, { useState } from 'react'
 import Cropper from 'react-easy-crop'
 
+interface Area {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}
+
 interface ImageCropperProps {
   image: string
-  onCropComplete: (croppedAreaPixels: any, rotation: number) => void
+  onCropComplete: (croppedAreaPixels: Area, rotation: number) => void
   onCancel: () => void
   onConfirm: () => void
 }
