@@ -1,15 +1,26 @@
 import * as apiModule from "../apps/api/dist/index.js";
 
-export default async function (req, res) {
-    // Find the Elysia instance (handle both ESM and CJS default exports)
-    let elysiaServer = apiModule.default || apiModule;
-    if (elysiaServer && elysiaServer.default && typeof elysiaServer.handle !== 'function') {
-        elysiaServer = elysiaServer.default;
-    }
+function findElysia(mod) {
+    if (!mod) return null;
+    if (typeof mod.handle === 'function') return mod;
+    if (mod.default && typeof mod.default.handle === 'function') return mod.default;
+    if (mod.default && mod.default.default && typeof mod.default.default.handle === 'function') return mod.default.default;
+    return null;
+}
 
-    if (!elysiaServer || typeof elysiaServer.handle !== 'function') {
+export default async function (req, res) {
+    console.log("API Bridge Request to:", req.url);
+
+    const elysiaServer = findElysia(apiModule);
+
+    if (!elysiaServer) {
+        console.error("Deep search failed. apiModule keys:", Object.keys(apiModule));
+        if (apiModule.default) {
+            console.error("apiModule.default type:", typeof apiModule.default);
+            console.error("apiModule.default keys:", Object.keys(apiModule.default));
+        }
         res.statusCode = 500;
-        res.end("API Internal Server Error: Handler not found");
+        res.end("API Internal Server Error: Handler not found after deep search");
         return;
     }
 
@@ -17,25 +28,21 @@ export default async function (req, res) {
     const host = req.headers.host;
     const url = new URL(req.url, `${protocol}://${host}`);
 
-    // Create a Web Standard Request from Node.js req
     const request = new Request(url.href, {
         method: req.method,
         headers: req.headers,
         body: req.method !== 'GET' && req.method !== 'HEAD' ? req : undefined,
-        // Duplex is required for streaming bodies in some versions of Node/Vercel
         duplex: 'half'
     });
 
     try {
         const response = await elysiaServer.handle(request);
         
-        // Set headers
         res.statusCode = response.status;
         response.headers.forEach((value, key) => {
             res.setHeader(key, value);
         });
 
-        // Transfer body
         const body = await response.arrayBuffer();
         res.end(Buffer.from(body));
     } catch (error) {
