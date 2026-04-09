@@ -176,12 +176,16 @@ bun run build
 ```
 
 #### Run Production:
-You can run the bundled output or run the source directly with Bun for maximum performance:
-```bash
-# Run the bundled output (Compatible with Node.js)
-bun apps/api/dist/index.js
+You can run the bundled output with Bun for maximum performance. For production environments, it is highly recommended to use a process manager like **PM2** to keep the app alive:
 
-# OR run the source natively (Recommended for pure Bun performance)
+```bash
+# Start the API with PM2 using Bun interpreter
+pm2 start apps/api/dist/index.js --name "bun-auth-api" --interpreter bun
+```
+
+Or run the source directly:
+```bash
+# Run source natively (Recommended for pure Bun performance)
 bun run apps/api/src/index.ts
 ```
 
