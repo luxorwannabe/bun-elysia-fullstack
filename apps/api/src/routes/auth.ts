@@ -215,8 +215,15 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
     }
   )
   .post('/logout', ({ cookie: { accessToken, refreshToken } }) => {
-    accessToken.remove()
-    refreshToken.remove()
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict' as const,
+      path: '/',
+    }
+
+    accessToken.set({ ...cookieOptions, value: '', maxAge: 0 })
+    refreshToken.set({ ...cookieOptions, value: '', maxAge: 0 })
     return { message: 'Logged out successfully' }
   }, {
     response: {

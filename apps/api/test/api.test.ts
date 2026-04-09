@@ -35,4 +35,30 @@ describe('API Smoke Tests', () => {
     const body = await response.json()
     expect(body.error).toBe('Route not found')
   })
+
+  test('POST /api/auth/logout should clear cookies', async () => {
+    const response = await app.handle(
+      new Request('http://localhost/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          'Cookie': 'accessToken=dummy; refreshToken=dummy'
+        }
+      })
+    )
+
+    expect(response.status).toBe(200)
+    const cookies = response.headers.getSetCookie()
+    
+    // Core check: We should have Set-Cookie for both tokens
+    expect(cookies.length).toBeGreaterThanOrEqual(2)
+    
+    const cookieStrings = cookies.join(', ')
+    expect(cookieStrings).toContain('accessToken=')
+    expect(cookieStrings).toContain('refreshToken=')
+    
+    // Check for removal indicator (Max-Age=0 or Expires in the past)
+    // Elysia sets Max-Age=0 or an old date for removal.
+    expect(cookieStrings).toContain('Max-Age=0') 
+    expect(cookieStrings).toContain('Path=/')
+  })
 })

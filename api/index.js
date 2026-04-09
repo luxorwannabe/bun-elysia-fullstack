@@ -32,9 +32,19 @@ export default async function (req, res) {
         const response = await app.handle(request);
         
         res.statusCode = response.status;
+        
+        const cookieHeaders = [];
         response.headers.forEach((value, key) => {
-            res.setHeader(key, value);
+            if (key.toLowerCase() === 'set-cookie') {
+                cookieHeaders.push(value);
+            } else {
+                res.setHeader(key, value);
+            }
         });
+
+        if (cookieHeaders.length > 0) {
+            res.setHeader('Set-Cookie', cookieHeaders);
+        }
 
         const body = await response.arrayBuffer();
         res.end(Buffer.from(body));
