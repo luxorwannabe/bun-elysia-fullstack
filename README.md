@@ -60,6 +60,8 @@ cp apps/api/.env.example apps/api/.env
 | `DB_PASSWORD` | MySQL Password | *empty* |
 | `DB_NAME` | Database Name | `bun_auth_api` |
 | `JWT_SECRET` | Secret for Access Token | *required* |
+| `REFRESH_SECRET` | Secret for Refresh Token | *required* |
+| `CORS_ORIGIN` | Allowed origin for CORS | `http://localhost:5173` |
 | `PORT` | API Port | `3000` |
 
 
