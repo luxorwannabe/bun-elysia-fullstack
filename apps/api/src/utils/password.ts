@@ -1,7 +1,9 @@
+import bcrypt from 'bcryptjs'
+
 export const hashPassword = (password: string): Promise<string> => {
-  return Bun.password.hash(password)
+  return bcrypt.hash(password, 10)
 }
 
 export const verifyPassword = (password: string, hash: string): Promise<boolean> => {
-  return Bun.password.verify(password, hash)
+  return bcrypt.compare(password, hash)
 }

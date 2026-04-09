@@ -21,6 +21,8 @@
     "@elysiajs/cors": "latest",
     "@elysiajs/jwt": "latest",
     "@elysiajs/swagger": "latest",
+    "@types/bcryptjs": "^3.0.0",
+    "bcryptjs": "^3.0.3",
     "drizzle-orm": "latest",
     "elysia": "latest",
     "elysia-rate-limit": "latest",
