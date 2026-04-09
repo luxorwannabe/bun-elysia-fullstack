@@ -144,7 +144,7 @@ Set these in **Settings > Environment Variables** to allow the API to connect to
 | `REFRESH_SECRET` | Secret for refresh tokens |
 | `CORS_ORIGIN` | Your Vercel deployment URL (e.g., `https://your-app.vercel.app`) |
 
-- **Architecture**: The API is deployed as a *Serverless Function* via the bridge in `api/index.js`, while the Frontend is served as static assets from `apps/web/dist`.
+- **Architecture**: The API is deployed as a *Serverless Function* via the adapter in `apps/api/vercel-adapter.js`, while the Frontend is served as static assets from `apps/web/dist`.
 - **Node.js Compatibility**: This project uses `bcryptjs` for password hashing to ensure seamless operation on Vercel's Node.js runtime, as Bun-specific APIs are not available there.
 
 ---
