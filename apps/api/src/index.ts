@@ -2,7 +2,6 @@ import { Elysia } from 'elysia'
 import { mkdirSync, existsSync } from 'node:fs'
 import { cors } from '@elysiajs/cors'
 import { swagger } from '@elysiajs/swagger'
-import { staticPlugin } from '@elysiajs/static'
 import { authRoutes } from './routes/auth.js'
 import { userRoutes } from './routes/user.js'
 
@@ -25,19 +24,21 @@ const routes = new Elysia()
     }
   })
 
-const app = new Elysia()
+let app = new Elysia()
   .use(
     cors({
-      origin: process.env.CORS_ORIGIN || true,
+      origin: process.env.NODE_ENV === 'production'
+        ? process.env.CORS_ORIGIN || false
+        : process.env.CORS_ORIGIN || true,
       credentials: true,
     })
   )
-  .use(
-    await staticPlugin({
-      assets: 'public/uploads',
-      prefix: '/uploads',
-    })
-  )
+  .onAfterHandle(({ set }) => {
+    set.headers['X-Content-Type-Options'] = 'nosniff'
+    set.headers['X-Frame-Options'] = 'DENY'
+    set.headers['X-DNS-Prefetch-Control'] = 'off'
+    set.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+  })
   .onError(({ code, error, set }) => {
     if (code === 'NOT_FOUND') {
       set.status = 404
@@ -101,6 +102,17 @@ const app = new Elysia()
     })
   )
   .group('/api', (app) => app.use(routes))
+
+// Load static plugin only on VPS/local (not on Vercel serverless)
+if (process.env.VERCEL !== '1') {
+  const { staticPlugin } = await import('@elysiajs/static')
+  app = app.use(
+    await staticPlugin({
+      assets: 'public/uploads',
+      prefix: '/uploads',
+    })
+  )
+}
 
 const port = Number(process.env.PORT) || 3000
 

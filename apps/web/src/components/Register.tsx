@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
+import { usePasswordStrength } from '../hooks/usePasswordStrength'
 
 export const Register: React.FC<{ onRegister: () => void }> = ({ onRegister }) => {
   useEffect(() => {
@@ -13,39 +14,7 @@ export const Register: React.FC<{ onRegister: () => void }> = ({ onRegister }) =
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // Password Strength Logic
-  const getPasswordStrength = () => {
-    let score = 0
-    if (password.length > 5) score += 1
-    if (password.length > 8) score += 1
-    if (/\d/.test(password)) score += 1
-    if (/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password)) score += 1
-    return score
-  }
-
-  const strengthScore = getPasswordStrength()
-  
-  const getStrengthColor = () => {
-    switch (strengthScore) {
-      case 0: return 'bg-slate-700'
-      case 1: return 'bg-red-500'
-      case 2: return 'bg-orange-500'
-      case 3: return 'bg-yellow-400'
-      case 4: return 'bg-emerald-500'
-      default: return 'bg-slate-700'
-    }
-  }
-
-  const getStrengthLabel = () => {
-    if (password.length === 0) return ''
-    switch (strengthScore) {
-      case 1: return 'Weak'
-      case 2: return 'Fair'
-      case 3: return 'Good'
-      case 4: return 'Strong'
-      default: return ''
-    }
-  }
+  const { score: strengthScore, color: strengthColor, label: strengthLabel } = usePasswordStrength(password)
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -132,13 +101,13 @@ export const Register: React.FC<{ onRegister: () => void }> = ({ onRegister }) =
           {password.length > 0 && (
             <div className="mt-3 animate-in fade-in">
               <div className="flex gap-1 h-1.5 w-full rounded-full overflow-hidden">
-                <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 1 ? getStrengthColor() : 'bg-slate-700'}`}></div>
-                <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 2 ? getStrengthColor() : 'bg-slate-700'}`}></div>
-                <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 3 ? getStrengthColor() : 'bg-slate-700'}`}></div>
-                <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 4 ? getStrengthColor() : 'bg-slate-700'}`}></div>
+                <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 1 ? strengthColor : 'bg-slate-700'}`}></div>
+                <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 2 ? strengthColor : 'bg-slate-700'}`}></div>
+                <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 3 ? strengthColor : 'bg-slate-700'}`}></div>
+                <div className={`h-full flex-1 transition-colors duration-300 ${strengthScore >= 4 ? strengthColor : 'bg-slate-700'}`}></div>
               </div>
               <p className="text-xs text-slate-400 mt-1.5 text-right font-medium">
-                {getStrengthLabel()}
+                {strengthLabel}
               </p>
             </div>
           )}

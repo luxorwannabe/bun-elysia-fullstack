@@ -26,13 +26,15 @@ This project uses **Bun Workspaces** to manage a monorepo structure:
 ## ✨ Key Features
 
 - **⚡ Lightning Fast**: Powered by Bun, one of the fastest JavaScript runtimes.
-- **🔒 Secure Authentication**: Complete JWT flow (Access & Refresh tokens) with MySQL persistence.
+- **🔒 Secure Authentication**: Complete JWT flow (Access & Refresh tokens) with HttpOnly cookies.
 - **📖 Auto-Docs**: Interactive Swagger/OpenAPI documentation generated automatically.
-- **🛡️ Typesafety**: End-to-end typesafety between Backend and Frontend using **Elysia Eden**.
+- **🛡️ Typesafety**: End-to-end typesafety between Backend and Frontend using **Eden Treaty**.
+- **🔐 Security Headers**: Production security headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`).
 - **🎨 Modern UI**: Styled with the latest TailwindCSS 4 and React 19 components.
 - **📊 Database Ready**: Pre-configured Drizzle ORM for schema management and migrations.
 - **🖼️ Fullstack Samples**: Includes production-ready Login, Register, and Profile management pages.
 - **☁️ Multi-Cloud Storage**: Vendor-agnostic storage system supporting Local, Cloudinary, and S3-compatible providers out of the box.
+- **🚦 Rate Limiting**: Production-grade request throttling with configurable limits.
 
 ---
 
@@ -61,12 +63,16 @@ cp apps/api/.env.example apps/api/.env
 | `DB_USER` | MySQL Username | `root` |
 | `DB_PASSWORD` | MySQL Password | *empty* |
 | `DB_NAME` | Database Name | `bun_auth_api` |
-| `JWT_SECRET` | Secret for Access Token | *required* |
-| `REFRESH_SECRET` | Secret for Refresh Token | *required* |
+| `JWT_SECRET` | Secret for Access Token (min 32 chars) | *required* |
+| `REFRESH_SECRET` | Secret for Refresh Token (min 32 chars) | *required* |
 | `DB_SSL` | Enable SSL for Cloud DB (TiDB/PlanetScale) | `false` |
 | `CORS_ORIGIN` | Allowed origin for CORS | `http://localhost:5173` |
 | `NODE_ENV` | Environment mode (`development` / `production`) | `development` |
+| `STORAGE_PROVIDER` | Storage engine (`local`, `cloudinary`, `s3`) | `local` |
 | `PORT` | API Port | `3000` |
+
+> [!IMPORTANT]
+> **Production CORS**: In production (`NODE_ENV=production`), if `CORS_ORIGIN` is not set, the API will **reject all cross-origin requests** by default. Always set `CORS_ORIGIN` to your frontend domain.
 
 
 
@@ -184,15 +190,19 @@ Set these in **Settings > Environment Variables** to allow the API to connect to
 | `REFRESH_SECRET` | Secret for refresh tokens |
 | `CORS_ORIGIN` | Your Vercel deployment URL (e.g., `https://your-app.vercel.app`) |
 | `NODE_ENV` | Set to `production` to enable Secure Cookies & Strict Rate Limiting |
+| `STORAGE_PROVIDER` | Set to `cloudinary` or `s3` (**`local` is rejected on Vercel**) |
 
 - **Architecture**: The API is deployed as a *Serverless Function* via the bridge in `api/index.js`, while the Frontend is served as static assets from `apps/web/dist`.
 - **Node.js Compatibility**: This project uses `bcryptjs` for password hashing to ensure seamless operation on Vercel's Node.js runtime, as Bun-specific APIs are not available there.
+
+> [!WARNING]
+> **Rate Limiting on Vercel**: The built-in rate limiter uses in-memory storage. On Vercel's serverless architecture, each function invocation may run in a separate instance, so rate limiting is **best-effort** only. For strict rate limiting on Vercel, consider using an external store (e.g., Upstash Redis) or Vercel's WAF features.
 
 ---
 
 ## 🧪 Testing
 
-This project includes a comprehensive test suite powered by **bun:test**.
+This project includes a comprehensive test suite powered by **bun:test**. Tests are also run automatically in the **CI pipeline** on every push.
 
 ### Running Tests
 To run all tests across the monorepo (API & Web):
@@ -201,9 +211,10 @@ bun run test
 ```
 
 ### Coverage
-- **API Smoke Tests**: Ensures core endpoints and Swagger JSON are reachable.
+- **API Smoke Tests**: Ensures core endpoints, Swagger JSON, and cookie cleanup are working.
 - **Utility Tests**: Validates password hashing and verification logic.
-- **Node.js Compatibility**: Verified to work in both Bun and Node environments.
+- **Frontend Tests**: Component rendering and navigation tests.
+- **CI Integration**: Tests run automatically via GitHub Actions on every push.
 
 ### 2. Self-Hosting (VPS / Docker)
 If you want to run the application on your own server using **Bun** natively, ensure you have a `.env` file with `NODE_ENV=production` set.

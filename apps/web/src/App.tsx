@@ -14,7 +14,7 @@ function App() {
       try {
         const { data, error } = await api.user.profile.get()
         
-        if (!error && data && typeof data !== 'string') {
+        if (!error && data) {
           setIsAuthenticated(true)
           return
         }
@@ -25,7 +25,7 @@ function App() {
           
           if (!refreshError) {
             const { data: retryData, error: retryError } = await api.user.profile.get()
-            if (!retryError && retryData && typeof retryData !== 'string') {
+            if (!retryError && retryData) {
               setIsAuthenticated(true)
               return
             }

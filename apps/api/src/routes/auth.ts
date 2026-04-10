@@ -5,15 +5,10 @@ import { eq } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { users } from '../db/schema.js'
 import { hashPassword, verifyPassword } from '../utils/password.js'
+import { getSecret } from '../utils/env.js'
 import { rateLimit } from 'elysia-rate-limit'
 
-const getSecret = (key: string, fallback: string) => {
-  const secret = process.env[key]
-  if (!secret && process.env.NODE_ENV === 'production') {
-    throw new Error(`${key} must be defined in production!`)
-  }
-  return secret || fallback
-}
+
 
 export const authRoutes = new Elysia({ prefix: '/auth' })
   .use(
@@ -36,7 +31,9 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
       duration: 60000, // 1 minute
       max: process.env.NODE_ENV === 'production' ? 15 : 100, // higher limit in dev due to React strict mode
       generator: (request, server) => {
-        return server?.requestIP(request)?.address || request.headers.get('x-forwarded-for') || '127.0.0.1'
+        const forwarded = request.headers.get('x-forwarded-for')
+        const clientIp = forwarded ? forwarded.split(',')[0].trim() : null
+        return server?.requestIP(request)?.address || clientIp || '127.0.0.1'
       },
       errorResponse: new Response(
         JSON.stringify({ error: 'Too many requests, please try again later' }),
@@ -91,7 +88,7 @@ export const authRoutes = new Elysia({ prefix: '/auth' })
       body: t.Object({
         email: t.String({ format: 'email', minLength: 1 }),
         password: t.String({ minLength: 6, maxLength: 72 }),
-        name: t.String({ minLength: 1 }),
+        name: t.String({ minLength: 1, maxLength: 100 }),
       }),
       response: {
         200: t.Object({

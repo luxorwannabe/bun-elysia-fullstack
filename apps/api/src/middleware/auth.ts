@@ -1,14 +1,7 @@
 import { Elysia } from 'elysia'
 import { jwt } from '@elysiajs/jwt'
 import { cookie } from '@elysiajs/cookie'
-
-const getSecret = (key: string, fallback: string) => {
-  const secret = process.env[key]
-  if (!secret && process.env.NODE_ENV === 'production') {
-    throw new Error(`${key} must be defined in production!`)
-  }
-  return secret || fallback
-}
+import { getSecret } from '../utils/env.js'
 
 export const authMiddleware = new Elysia({ name: 'auth-middleware' })
   .use(

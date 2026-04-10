@@ -8,6 +8,9 @@ const connection = await mysql.createConnection({
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'bun_auth_api',
+  ssl: process.env.DB_SSL === 'true' || process.env.DB_HOST?.includes('tidbcloud.com')
+    ? { minVersion: 'TLSv1.2', rejectUnauthorized: true }
+    : undefined,
 })
 
 const db = drizzle(connection)

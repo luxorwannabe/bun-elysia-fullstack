@@ -106,7 +106,7 @@ export const userRoutes = new Elysia({ prefix: '/user' })
     },
     {
       body: t.Object({
-        name: t.Optional(t.String({ minLength: 1 })),
+        name: t.Optional(t.String({ minLength: 1, maxLength: 100 })),
         email: t.Optional(t.String({ format: 'email' })),
       }),
       response: {
@@ -196,7 +196,13 @@ export const userRoutes = new Elysia({ prefix: '/user' })
       }
 
       try {
-        // Process image with Sharp
+        // 1. Get the old avatar URL FIRST (before uploading new one)
+        const [user] = await db
+          .select({ avatarUrl: users.avatarUrl })
+          .from(users)
+          .where(eq(users.id, userId))
+
+        // 2. Process image with Sharp
         // Resize to 350x350, crop to center, and convert to WebP for optimization
         const processedImageBuffer = await sharp(await file.arrayBuffer())
           .resize(350, 350, { fit: 'cover' })
@@ -206,16 +212,13 @@ export const userRoutes = new Elysia({ prefix: '/user' })
         // Create a new File-like object from the buffer for the storage providers
         const processedFile = new Blob([new Uint8Array(processedImageBuffer)], { type: 'image/webp' });
 
-        // Upload using our generic storage provider
+        // 3. Upload using our generic storage provider
         const avatarUrl = await storage.upload(processedFile, `avatar-${userId}-${Date.now()}.webp`);
 
-        // Get the old avatar to delete it if necessary
-        const [user] = await db
-          .select({ avatarUrl: users.avatarUrl })
-          .from(users)
-          .where(eq(users.id, userId))
+        // 4. Update database with new URL (atomic)
+        await db.update(users).set({ avatarUrl }).where(eq(users.id, userId))
 
-        // Delete old avatar if it exists
+        // 5. Delete old avatar AFTER successful DB update (best-effort cleanup)
         if (user?.avatarUrl) {
           try {
             await storage.delete(user.avatarUrl)
@@ -223,9 +226,6 @@ export const userRoutes = new Elysia({ prefix: '/user' })
             console.error('Failed to delete old avatar:', e)
           }
         }
-
-        // Update database with new URL
-        await db.update(users).set({ avatarUrl }).where(eq(users.id, userId))
 
         return { avatarUrl }
       } catch (error) {

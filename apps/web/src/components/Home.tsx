@@ -101,7 +101,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   { title: 'Bun Native', desc: 'Fastest-in-class performance.' },
-                  { title: 'JWT Flow', desc: 'Secure Auth with Refresh tokens.' },
+                  { title: 'JWT + HttpOnly', desc: 'Secure Auth with Refresh tokens.' },
                   { title: 'Drizzle ORM', desc: 'High-speed typesafe database ops.' },
                   { title: 'Eden Treaty', desc: 'End-to-end typesafe API calls.' },
                 ].map((item, i) => (
@@ -122,7 +122,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
               },
               { 
                 title: '🔒 Secure Auth', 
-                desc: 'Production-grade JWT implementation using HttpOnly cookies for Maximum Security.', 
+                desc: 'Production-grade JWT with HttpOnly cookies, security headers, and rate limiting built-in.', 
                 icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-pink-400"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> 
               },
               { 
@@ -158,7 +158,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                 { step: '04', title: 'Launch', desc: 'Run `bun dev` to start apps.' },
               ].map((s, i) => (
                 <div key={i} className="shrink-0 min-w-[240px] p-8 rounded-2xl md:rounded-[35px] bg-slate-900 border border-white/5 relative group transition-all duration-300 hover:border-indigo-500/30">
-                   <div className="text-6xl font-black text-indigo-500/10 absolute top-4 right-8 group-hover:text-indigo-500/20 transition-colors uppercase italic">{s.step}</div>
+                   <div className="text-6xl font-black text-indigo-400/30 absolute top-4 right-8 group-hover:text-indigo-400/50 transition-colors uppercase italic">{s.step}</div>
                    <div className="space-y-3 relative z-10">
                       <h4 className="text-xl font-black text-white">{s.title}</h4>
                       <p className="text-slate-500 text-sm leading-relaxed">{s.desc}</p>
@@ -277,7 +277,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                 { t: 'HttpOnly Cookies', d: 'Impervious to XSS attacks by keeping tokens outside JS reach.', ic: '🛡️' },
                 { t: 'Bcrypt Hashing', d: 'Salted cryptographic hashes for all user passwords.', ic: '🔐' },
                 { t: 'Rate Limiting', d: 'Production-ready protection against brute-force attempts.', ic: '⏲️' },
-                { t: 'Typesafe Refs', d: 'Strict schema validation on every single API payload.', ic: '✅' },
+                { t: 'Security Headers', d: 'X-Frame-Options, CSP, and other headers to harden your app.', ic: '🔒' },
               ].map((s, i) => (
                 <div key={i} className="p-8 rounded-3xl md:rounded-[40px] bg-white/2 border border-white/5 hover:bg-white/5 transition-colors group">
                    <div className="text-3xl mb-6 group-hover:scale-125 transition-transform">{s.ic}</div>
@@ -349,9 +349,9 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
                  <tbody className="text-slate-300">
                     {[
                       { v: 'DB_HOST', s: 'Required', d: 'MySQL Server Host Address (localhost/remote)' },
-                      { v: 'JWT_SECRET', s: 'Required', d: 'Cryptographic secret for Access Tokens' },
+                      { v: 'JWT_SECRET', s: 'Required', d: 'Cryptographic secret for Access Tokens (32+ chars)' },
                       { v: 'STORAGE_PROVIDER', s: 'Optional', d: 'local, cloudinary, or s3' },
-                      { v: 'CORS_ORIGIN', s: 'Production', d: 'Domain allowed to access the API' },
+                      { v: 'CORS_ORIGIN', s: 'Production', d: 'Frontend domain allowed to access the API' },
                     ].map((row, i) => (
                       <tr key={i} className="group hover:bg-white/2 border-b border-white/5 transition-colors">
                          <td className="p-6 border-r border-white/5 font-mono text-indigo-400 font-bold">{row.v}</td>
