@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { api } from '../lib/api'
 import { ProfileAvatar } from './profile/ProfileAvatar'
 import { ProfileNameEditor } from './profile/ProfileNameEditor'
@@ -14,15 +14,24 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   const [loading, setLoading] = useState(true)
   const [passwordSuccess, setPasswordSuccess] = useState('')
   const [profileError, setProfileError] = useState('')
+  const [refreshing, setRefreshing] = useState(false)
+
+  const hasLoadedOnce = useRef(false)
 
   const fetchProfile = useCallback(async () => {
-    setLoading(true)
+    if (!hasLoadedOnce.current) {
+      setLoading(true)
+    } else {
+      setRefreshing(true)
+    }
     const { data, error: apiError } = await api.user.profile.get()
     
     if (!apiError) {
       if (data) {
         setUser(data as UserProfile)
+        hasLoadedOnce.current = true
         setLoading(false)
+        setRefreshing(false)
         return
       }
     }
@@ -33,7 +42,9 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
         const { data: retryData, error: retryError } = await api.user.profile.get()
         if (!retryError && retryData) {
           setUser(retryData as UserProfile)
+          hasLoadedOnce.current = true
           setLoading(false)
+          setRefreshing(false)
           return
         }
       }
@@ -41,6 +52,7 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
     
     onLogout()
     setLoading(false)
+    setRefreshing(false)
   }, [onLogout])
 
   useEffect(() => {
@@ -70,6 +82,13 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
 
   return (
     <div className="relative max-w-2xl w-full p-6 sm:p-8 bg-slate-800 rounded-xl shadow-2xl border border-slate-700 animate-in fade-in zoom-in duration-500 overflow-hidden">
+      
+      {/* Refreshing overlay */}
+      {refreshing && (
+        <div className="absolute inset-0 z-20 bg-slate-800/60 backdrop-blur-sm flex items-center justify-center rounded-xl">
+          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
       
       {passwordSuccess && (
         <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-sm font-bold flex items-center gap-2 animate-in slide-in-from-top-4">

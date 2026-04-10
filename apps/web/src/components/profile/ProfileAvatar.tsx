@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import { api } from '../../lib/api'
 import { getCroppedImg } from '../../lib/image'
 import { ImageCropper } from '../ImageCropper'
@@ -22,12 +22,15 @@ export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ user, onAvatarUpda
   const [showVercelWarning, setShowVercelWarning] = useState(false)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const imgRef = useRef<HTMLImageElement>(null)
 
-  useEffect(() => {
-    setIsImageLoading(true)
-    setHasImageError(false)
-    setHasFallbackError(false)
-  }, [user.avatarUrl, user.email])
+  // Handle cached images: if img is already complete when mounted, mark as loaded
+  const handleImgRef = useCallback((node: HTMLImageElement | null) => {
+    imgRef.current = node
+    if (node?.complete && node.naturalWidth > 0) {
+      setIsImageLoading(false)
+    }
+  }, [])
 
   const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -123,6 +126,7 @@ export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ user, onAvatarUpda
               )}
               {!hasFallbackError ? (
                 <img 
+                  ref={handleImgRef}
                   src={(user.avatarUrl && !hasImageError) ? user.avatarUrl : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
                   alt="" 
                   className={`w-full h-full object-cover rounded-2xl transition-opacity duration-500 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
