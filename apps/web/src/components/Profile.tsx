@@ -51,7 +51,9 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   
   // Avatar State
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+  const [isImageLoading, setIsImageLoading] = useState(true)
   const [hasImageError, setHasImageError] = useState(false)
+  const [hasFallbackError, setHasFallbackError] = useState(false)
   const [cropModalOpen, setCropModalOpen] = useState(false)
   const [tempImage, setTempImage] = useState<string | null>(null)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
@@ -95,6 +97,14 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   useEffect(() => {
     fetchProfile()
   }, [fetchProfile])
+
+  useEffect(() => {
+    if (user) {
+      setIsImageLoading(true)
+      setHasImageError(false)
+      setHasFallbackError(false)
+    }
+  }, [user?.avatarUrl, user?.email])
 
   const handleLogout = async () => {
     await api.auth.logout.post()
@@ -316,19 +326,37 @@ export const Profile: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
           >
             {isUploadingAvatar ? (
               <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-            ) : (user.avatarUrl && !hasImageError) ? (
-              <img 
-                src={user.avatarUrl} 
-                alt={user.name} 
-                className="w-full h-full object-cover rounded-2xl"
-                onError={() => setHasImageError(true)}
-              />
             ) : (
-              <img 
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
-                alt={user.name} 
-                className="w-full h-full object-cover bg-indigo-500/20 rounded-2xl"
-              />
+              <div className="relative w-full h-full flex items-center justify-center">
+                {isImageLoading && (
+                  <div className={`absolute inset-0 z-10 flex items-center justify-center border-2 border-slate-600/50 rounded-2xl animate-pulse ${user.avatarUrl && !hasImageError ? 'bg-slate-700' : 'bg-linear-to-br from-indigo-500 to-purple-600'}`}>
+                    <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                )}
+                {!hasFallbackError ? (
+                  <img 
+                    src={(user.avatarUrl && !hasImageError) ? user.avatarUrl : `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
+                    alt="" 
+                    className={`w-full h-full object-cover rounded-2xl transition-opacity duration-500 ${isImageLoading ? 'opacity-0' : 'opacity-100'}`}
+                    onLoad={() => setIsImageLoading(false)}
+                    onError={() => {
+                      if (user.avatarUrl && !hasImageError) {
+                        setHasImageError(true)
+                        setIsImageLoading(true)
+                      } else {
+                        setHasFallbackError(true)
+                        setIsImageLoading(false)
+                      }
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-slate-800 rounded-2xl border-2 border-slate-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500">
+                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                  </div>
+                )}
+              </div>
             )}
             
             <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl">
