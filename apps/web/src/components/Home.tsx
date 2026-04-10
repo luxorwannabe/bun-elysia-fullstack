@@ -30,7 +30,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         href="https://github.com/luxorwannabe/bun-elysia-fullstack" 
         target="_blank" 
         rel="noopener noreferrer"
-        className="fixed top-6 right-6 z-[100] hidden md:flex items-center justify-center gap-3 px-7 py-3 rounded-full backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(99,102,241,0.1)] hover:bg-white/10 hover:border-white/20 hover:scale-105 hover:shadow-[0_0_40px_rgba(139,92,246,0.4)] transition-all duration-500 group group-hover:border-indigo-500/50"
+        className="fixed top-6 right-6 z-100 hidden md:flex items-center justify-center gap-3 px-7 py-3 rounded-full backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(99,102,241,0.1)] hover:bg-white/10 hover:border-white/20 hover:scale-105 hover:shadow-[0_0_40px_rgba(139,92,246,0.4)] transition-all duration-500 group group-hover:border-indigo-500/50"
       >
          <div className="absolute inset-0 rounded-full bg-linear-to-r from-indigo-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-white relative z-10 group-hover:rotate-12 transition-transform duration-500">
@@ -596,7 +596,7 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         <footer className="relative mt-8 pt-8 pb-12 flex flex-col items-center gap-10 text-center overflow-hidden">
            {/* Background Decorative Text */}
            <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none -z-10">
-              <span className="text-[12vw] font-black text-white/[0.03] tracking-[2em] translate-x-[1em] whitespace-nowrap uppercase">BUN ELYSIA</span>
+              <span className="text-[12vw] font-black text-white/3 tracking-[2em] translate-x-[1em] whitespace-nowrap uppercase">BUN ELYSIA</span>
            </div>
            
            <div className="flex flex-col items-center gap-8 relative z-10 transition-all duration-700">
