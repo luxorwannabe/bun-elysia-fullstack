@@ -25,6 +25,20 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
   }
   return (
     <div className="relative w-full overflow-x-hidden font-sans selection:bg-pink-500/30 selection:text-pink-200 scroll-smooth">
+      {/* Floating GitHub Badge (Desktop Only) */}
+      <a 
+        href="https://github.com/luxorwannabe/bun-elysia-fullstack" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="fixed top-6 right-6 z-[100] hidden md:flex items-center justify-center gap-3 px-7 py-3 rounded-full backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(99,102,241,0.1)] hover:bg-white/10 hover:border-white/20 hover:scale-105 hover:shadow-[0_0_40px_rgba(139,92,246,0.4)] transition-all duration-500 group group-hover:border-indigo-500/50"
+      >
+         <div className="absolute inset-0 rounded-full bg-linear-to-r from-indigo-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-white relative z-10 group-hover:rotate-12 transition-transform duration-500">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+         </svg>
+         <span className="text-[10px] font-black tracking-[0.2em] text-white uppercase relative z-10">Star on GitHub</span>
+      </a>
+
       {/* Background Decorative Glows */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-[5%] left-[-5%] w-[600px] h-[600px] rounded-full bg-pink-500/10 blur-[120px] animate-pulse" />
@@ -368,6 +382,188 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
            </div>
         </section>
 
+        {/* --- Application Samples Preview --- */}
+        <section id="samples" className="space-y-24 py-12 scroll-mt-20">
+           <div className="text-center space-y-4">
+              <span className="text-pink-500 font-black tracking-widest text-xs uppercase px-3 py-1 bg-pink-500/10 rounded-lg">Real-world Ready</span>
+              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter">Pre-built <span className="bg-linear-to-r from-violet-400 to-indigo-500 bg-clip-text text-transparent italic">Application</span> Samples.</h2>
+              <p className="text-slate-500 max-w-xl mx-auto text-lg font-medium">Production-grade features implemented with modern best practices.</p>
+           </div>
+           
+           <div className="space-y-32">
+              {/* Login Flow */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                 <div className="space-y-8 order-2 lg:order-1">
+                    <div className="inline-flex p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    </div>
+                    <div className="space-y-4">
+                       <h3 className="text-3xl font-black text-white tracking-tight leading-tight">Secure <br/>Authentication Flow</h3>
+                       <p className="text-slate-400 text-lg leading-relaxed font-medium">
+                          A complete JWT-based authentication system using HttpOnly cookies to prevent XSS. 
+                          Features secure login, token refreshing, and automatic session cleanup.
+                       </p>
+                    </div>
+                    <ul className="space-y-3">
+                       {['CSRF Protection', 'JWT Refresh Strategy', 'Device-bound Sessions'].map(item => (
+                          <li key={item} className="flex items-center gap-3 text-slate-500 font-bold text-sm">
+                             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                             {item}
+                          </li>
+                       ))}
+                    </ul>
+                 </div>
+                 
+                 <div className="relative group order-1 lg:order-2">
+                    <div className="absolute inset-0 bg-indigo-500/20 blur-[100px] group-hover:bg-indigo-500/30 transition-all rounded-full scale-75"></div>
+                    <div className="relative p-8 bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl space-y-6 max-w-sm mx-auto transform hover:-rotate-2 transition-transform duration-500">
+                       <div className="text-center space-y-2 mb-4">
+                          <div className="w-12 h-12 bg-indigo-500/10 rounded-full mx-auto flex items-center justify-center text-indigo-400 font-black italic">B</div>
+                          <p className="text-white font-black text-lg">Sign In</p>
+                       </div>
+                       <div className="space-y-4">
+                          <div className="h-10 bg-slate-900 border border-slate-700 rounded-lg w-full flex items-center px-3">
+                             <div className="h-2 w-24 bg-slate-700 rounded-full"></div>
+                          </div>
+                          <div className="h-10 bg-slate-900 border border-slate-700 rounded-lg w-full flex items-center px-3">
+                             <div className="h-2 w-16 bg-slate-700 rounded-full"></div>
+                          </div>
+                          <div className="h-12 bg-indigo-600 rounded-lg w-full flex items-center justify-center">
+                             <div className="h-2 w-20 bg-white/50 rounded-full"></div>
+                          </div>
+                       </div>
+                       <div className="pt-4 flex justify-center">
+                          <span className="px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-[10px] uppercase font-black tracking-widest text-slate-500">Secured with Cookies</span>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+
+              {/* Register Flow */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                 <div className="relative group lg:order-1">
+                    <div className="absolute inset-0 bg-pink-500/20 blur-[100px] group-hover:bg-pink-500/30 transition-all rounded-full scale-75"></div>
+                    <div className="relative p-8 bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl space-y-6 max-w-sm mx-auto transform hover:rotate-2 transition-transform duration-500">
+                       <div className="text-center space-y-1 mb-2">
+                          <p className="text-white font-black text-lg">Create Account</p>
+                          <p className="text-slate-500 text-xs">Join the ecosystem</p>
+                       </div>
+                       <div className="space-y-4">
+                          <div className="h-10 bg-slate-900 border border-slate-700 rounded-lg w-full flex items-center px-3">
+                             <div className="h-2 w-28 bg-slate-700 rounded-full"></div>
+                          </div>
+                          <div className="h-10 bg-slate-900 border border-slate-700 rounded-lg w-full flex items-center px-3">
+                             <div className="h-2 w-12 bg-slate-700 rounded-full"></div>
+                          </div>
+                          <div className="space-y-2">
+                             <div className="h-10 bg-slate-900 border border-slate-700 rounded-lg w-full flex items-center px-3">
+                                <div className="h-2 w-32 bg-slate-700 rounded-full"></div>
+                             </div>
+                             <div className="flex gap-1 h-1.5 w-full rounded-full overflow-hidden px-1">
+                                <div className="h-full flex-1 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                                <div className="h-full flex-1 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                                <div className="h-full flex-1 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                                <div className="h-full flex-1 bg-slate-700"></div>
+                             </div>
+                             <p className="text-[10px] text-emerald-400 text-right font-black uppercase tracking-tighter">Strong Password</p>
+                          </div>
+                          <div className="h-12 bg-pink-600 rounded-lg w-full flex items-center justify-center mt-2">
+                             <div className="h-2 w-16 bg-white/50 rounded-full"></div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+                 
+                 <div className="space-y-8 lg:order-2">
+                    <div className="inline-flex p-3 rounded-2xl bg-pink-500/10 border border-pink-500/20 text-pink-400">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
+                    </div>
+                    <div className="space-y-4">
+                       <h3 className="text-3xl font-black text-white tracking-tight leading-tight">Advanced <br/>Registration Logic</h3>
+                       <p className="text-slate-400 text-lg leading-relaxed font-medium">
+                          Multi-stage registration with built-in real-time validation and Bcrypt cryptographic hashing for industrial-grade password security.
+                       </p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                       {[
+                          { l: 'Strength Meter', ic: '📊' },
+                          { l: 'Bcrypt Hash', ic: '🔐' },
+                          { l: 'Email Validation', ic: '📧' },
+                          { l: 'Auto-Login', ic: '🚀' },
+                       ].map(item => (
+                          <div key={item.l} className="flex items-center gap-2 p-3 rounded-xl bg-white/2 border border-white/5">
+                             <span className="text-base">{item.ic}</span>
+                             <span className="text-slate-500 font-bold text-xs uppercase tracking-tight">{item.l}</span>
+                          </div>
+                       ))}
+                    </div>
+                 </div>
+              </div>
+
+              {/* Profile Management */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                 <div className="space-y-8 order-2 lg:order-1">
+                    <div className="inline-flex p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </div>
+                    <div className="space-y-4">
+                       <h3 className="text-3xl font-black text-white tracking-tight leading-tight">Dynamic Profile <br/>& Image Processing</h3>
+                       <p className="text-slate-400 text-lg leading-relaxed font-medium">
+                          Comprehensive user dashboard featuring inline editing, atomic data updates, and an advanced image cropping system compatible with S3 and Cloudinary.
+                       </p>
+                    </div>
+                    <div className="space-y-4">
+                       {[
+                          { t: 'Multi-Cloud Upload', d: 'Supports Local, S3, R2, and Cloudinary out-of-the-box.' },
+                          { t: 'Interactive Cropping', d: 'Precise client-side image manipulation using react-easy-crop.' },
+                       ].map((item, i) => (
+                          <div key={i} className="space-y-1">
+                             <h4 className="text-white font-bold text-sm tracking-tight">{item.t}</h4>
+                             <p className="text-slate-500 text-xs leading-relaxed font-medium">{item.d}</p>
+                          </div>
+                       ))}
+                    </div>
+                 </div>
+                 
+                 <div className="relative group order-1 lg:order-2">
+                    <div className="absolute inset-x-0 top-0 h-40 bg-emerald-500/10 blur-[80px] group-hover:bg-emerald-500/20 transition-all rounded-full"></div>
+                    <div className="relative p-6 bg-slate-800 rounded-3xl border border-slate-700 shadow-2xl space-y-8 overflow-hidden transform hover:scale-[1.02] transition-transform duration-500">
+                       <div className="flex items-center gap-6">
+                          <div className="w-16 h-16 rounded-full bg-linear-to-br from-indigo-500 to-pink-500 p-1">
+                             <div className="w-full h-full bg-slate-900 rounded-full flex items-center justify-center relative overflow-hidden">
+                                <span className="text-white font-black text-xl">LX</span>
+                                <div className="absolute bottom-0 inset-x-0 h-1/3 bg-black/40 backdrop-blur-md flex items-center justify-center text-[8px] font-black uppercase text-white/80">Edit</div>
+                             </div>
+                          </div>
+                          <div className="space-y-2 flex-1">
+                             <div className="h-3 bg-slate-700 rounded-full w-3/4"></div>
+                             <div className="h-2 bg-slate-900 rounded-full w-1/2"></div>
+                          </div>
+                       </div>
+                       <div className="space-y-4 pt-4">
+                          <div className="py-4 border-t border-slate-700/50 space-y-3">
+                             <div className="flex justify-between items-center">
+                                <div className="h-2 w-20 bg-slate-700 rounded-full"></div>
+                                <div className="h-5 w-12 bg-indigo-500/10 border border-indigo-500/20 rounded-md"></div>
+                             </div>
+                             <div className="flex justify-between items-center">
+                                <div className="h-2 w-32 bg-slate-700 rounded-full"></div>
+                                <div className="h-5 w-12 bg-indigo-500/10 border border-indigo-500/20 rounded-md"></div>
+                             </div>
+                          </div>
+                          <div className="h-10 bg-red-500/10 border border-red-500/20 rounded-lg w-full flex items-center justify-center">
+                             <div className="h-2 w-16 bg-red-500/50 rounded-full"></div>
+                          </div>
+                       </div>
+                       <div className="absolute top-0 right-0 p-4">
+                          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </section>
+
         {/* --- Final CTA --- */}
         <section className="py-24 relative overflow-hidden rounded-3xl md:rounded-[70px] border border-white/10 bg-slate-900/50 backdrop-blur-2xl text-center shadow-2xl">
            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-pink-500/10 to-transparent -z-10 animate-pulse"></div>
@@ -397,25 +593,39 @@ export const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
         </section>
 
         {/* --- Footer Signature --- */}
-        <footer className="pt-12 flex flex-col items-center gap-12 text-center">
-           <div className="flex flex-col items-center gap-6">
-              <div className="flex items-center gap-4">
-                 <div className="w-12 h-12 rounded-2xl bg-linear-to-br from-pink-500 via-violet-500 to-indigo-500 p-px">
-                    <div className="w-full h-full bg-slate-950 rounded-[15px] flex items-center justify-center text-white font-black text-xl italic">B</div>
+        <footer className="relative mt-8 pt-8 pb-12 flex flex-col items-center gap-10 text-center overflow-hidden">
+           {/* Background Decorative Text */}
+           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none -z-10">
+              <span className="text-[12vw] font-black text-white/[0.03] tracking-[2em] translate-x-[1em] whitespace-nowrap uppercase">BUN ELYSIA</span>
+           </div>
+           
+           <div className="flex flex-col items-center gap-8 relative z-10 transition-all duration-700">
+              <div className="group relative">
+                 <div className="absolute inset-0 bg-linear-to-br from-pink-500 via-violet-500 to-indigo-500 blur-2xl opacity-0 group-hover:opacity-40 transition-opacity duration-500 rounded-full"></div>
+                 <div className="flex items-center gap-5 relative z-10">
+                    <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-pink-500 via-violet-500 to-indigo-500 p-px shadow-2xl transition-transform group-hover:scale-110 group-hover:rotate-6 duration-500">
+                       <div className="w-full h-full bg-slate-950 rounded-[15px] flex items-center justify-center text-white font-black text-2xl italic tracking-tighter">B</div>
+                    </div>
+                    <div className="flex flex-col items-start translate-y-1">
+                       <span className="font-black tracking-tighter text-3xl text-white leading-none">BUN ELYSIA</span>
+                       <span className="text-slate-500 font-bold tracking-[0.3em] text-[10px] uppercase pl-1 opacity-70">Fullstack Monorepo</span>
+                    </div>
                  </div>
-                 <span className="font-black tracking-tighter text-2xl text-white">BUN ELYSIA FULLSTACK</span>
               </div>
-              <p className="text-slate-600 text-sm max-w-sm leading-relaxed">
-                 A curated monorepo boilerplate for rapid fullstack development. No fluff, just pure performance.
+              
+              <p className="text-slate-500 text-sm max-w-sm leading-relaxed font-medium">
+                 A high-performance monorepo boilerplate built for rapid fullstack development. 
+                 Handcrafted with <span className="text-pink-500">♥</span> by <a href="https://github.com/luxorwannabe" className="text-indigo-400 hover:underline">Luxor</a>.
               </p>
            </div>
            
-           <div className="space-y-4 text-center">
-              <div className="flex items-center justify-center gap-6 opacity-40 grayscale hover:grayscale-0 transition-all">
+           <div className="space-y-6 text-center relative z-10">
+              <div className="flex flex-wrap items-center justify-center gap-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
                  {['Bun', 'Elysia', 'Drizzle', 'React', 'Eden'].map(t => (
-                   <span key={t} className="text-[10px] font-black tracking-widest text-white uppercase border border-white/20 px-3 py-1 rounded-full">{t}</span>
+                   <span key={t} className="text-[10px] font-black tracking-widest text-white uppercase border border-white/10 bg-white/5 px-4 py-1.5 rounded-full hover:border-white/30 transition-colors">{t}</span>
                  ))}
               </div>
+
            </div>
         </footer>
 
